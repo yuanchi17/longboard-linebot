@@ -16,7 +16,7 @@ const linebotParser = bot.parser();
 bot.on('message', event => {
   console.log(event);
   switch (event.message.text) {
-    case '測試': event.reply("恭喜你測試成功！！")
+    case '測試': event.reply("恭喜你測試成功！！！")
       break
     default:
       event.reply('嗯...讓我想想')
