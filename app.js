@@ -15,25 +15,36 @@ const bot = linebot({
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN
 });
 
-const longboardStores = getData.getCsv('https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?gid=0&single=true&output=csv')
-const playgrounds = getData.getCsv('https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?gid=2013906441&single=true&output=csv')
-getStores(longboardStores)
+const getStores = async () => {
+  // 讀取資料
+  const longboardStores = await getData.getCsv('https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?gid=0&single=true&output=csv')
+  const playgrounds = await getData.getCsv('https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?gid=2013906441&single=true&output=csv')
+  const storeCitys = _.groupBy(longboardStores, 'city')
+  const groundCitys = _.groupBy(playgrounds, 'city')
 
-express.getStores = (longboardStores) => {
   bot.on('message', event => {
-    console.log(event.message.text);
-    switch (event.message.text) {
+    const message = event.message.text
+    console.log(message);
+    console.log(longboardStores)
+    console.log(storeCitys)
+    switch (message) {
       case '在測試什麼': event.reply("chatbot 回覆台中的店家")
         break
-      case '台中': event.reply("台中的長板店有...")
-        break
       default:
-        event.reply('嗯...讓我想想')
+        if (!_.get(storeCitys, message)) {
+          event.reply(`我沒有${message}的資料哦`)
+          return
+        }
+        console.log('find stores')
+        const stores = _.filter(longboardStores, store => { return store.city === message })
+        console.log(_.map(stores, 'name'))
+        event.reply(_.map(stores, 'name'))
+        event.reply('以上是台中的長板店')
     }
-    const stores = _.filter(longboardStores, store => { return store.city === event.message.text })
-    event.reply(_.forEach(stores, store => { store.name }))
   })
 }
+
+getStores()
 
 const app = express()
 const linebotParser = bot.parser();
@@ -43,7 +54,7 @@ app.listen(process.env.PORT || 3000, async () => {
   console.log('Express server start')
 });
 
-// 資料
+// 資料範例
 // {
 //   city: '台中',
 //   name: '長樂 Nagaraku Boardshop',
