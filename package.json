@@ -1,10 +1,15 @@
 {
   "name": "yuan-chatbot",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "repository": "https://github.com/lyccccc17/yuan-chatbot.git",
   "author": "李元琦 <yuan.chi@program.com.tw>",
   "license": "MIT",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
