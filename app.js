@@ -3,7 +3,7 @@ const express = require('express') // 伺服器端用的模組
 const linebot = require('linebot') // (Node.js模組)判別開發環境
 
 const _ = require('lodash')
-const getData = require('./getData')
+const { getLongboardStores, getPlaygrounds } = require('./getData')
 
 if (process.env.NODE_ENV !== 'production') { // 如果不是 production 模式
   require('dotenv').config() // 使用 dotenv 讀取 .env 檔案
@@ -17,29 +17,23 @@ const bot = linebot({
 
 const getStores = async () => {
   // 讀取資料
-  const longboardStores = await getData.getCsv('https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?gid=0&single=true&output=csv')
-  const playgrounds = await getData.getCsv('https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?gid=2013906441&single=true&output=csv')
+  const longboardStores = await getLongboardStores()
+  const playgrounds = await getPlaygrounds()
   const storeCitys = _.groupBy(longboardStores, 'city')
   const groundCitys = _.groupBy(playgrounds, 'city')
 
   bot.on('message', event => {
     const message = event.message.text
-    console.log(message);
-    console.log(longboardStores)
-    console.log(storeCitys)
     switch (message) {
-      case '在測試什麼': event.reply("chatbot 回覆台中的店家")
+      case '在測試什麼': event.reply("回覆該縣市有的長板店家")
         break
       default:
         if (!_.get(storeCitys, message)) {
           event.reply(`我沒有${message}的資料哦`)
           return
         }
-        console.log('find stores')
         const stores = _.filter(longboardStores, store => { return store.city === message })
-        console.log(_.map(stores, 'name'))
         event.reply(_.map(stores, 'name'))
-        event.reply('以上是台中的長板店')
     }
   })
 }
