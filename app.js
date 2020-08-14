@@ -4,6 +4,7 @@ const linebot = require('linebot') // (Node.js模組)判別開發環境
 
 const _ = require('lodash')
 const { getLongboardStores, getPlaygrounds } = require('./getData')
+const flexMessage = require('./flexMessage')
 
 if (process.env.NODE_ENV !== 'production') { // 如果不是 production 模式
   require('dotenv').config() // 使用 dotenv 讀取 .env 檔案
