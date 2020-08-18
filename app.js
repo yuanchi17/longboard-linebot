@@ -1,49 +1,59 @@
 // 選擇 Heroku 作為伺服器
 const express = require('express') // 伺服器端用的模組
-const linebot = require('linebot') // (Node.js模組)判別開發環境
+// const linebot = require('linebot') // (Node.js模組)判別開發環境
+const line = require('@line/bot-sdk')
 
 const _ = require('lodash')
 const { getLongboardStores, getPlaygrounds } = require('./getData')
 const flexMessage = require('./flexMessage')
 
-if (process.env.NODE_ENV !== 'production') { // 如果不是 production 模式
-  require('dotenv').config() // 使用 dotenv 讀取 .env 檔案
+const app = express() // 取得 express 實體
+const config = {
+  channelId: '1654061086',
+  channelSecret: '1c8ef4723f515503e64fffb32592ce3b',
+  channelAccessToken: '2p1E0ii7rg0ThEJxfqcOD/6rLfM+BK8uix2W2J4G+ropOhxn8a72/euiCN8TvzweE2dAf8C8RonnfAYFrCAiuvrgJWKLLm1Icc8UvVbcDCq78DCA1OxlipxBEAHsbTJUphMQlfM4rRhm/CgtYcQp5gdB04t89/1O/w1cDnyilFU='
 }
 
-const bot = linebot({
-  channelId: process.env.CHANNEL_ID,
-  channelSecret: process.env.CHANNEL_SECRET,
-  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN
-});
+// const getStores = async () => {
+//   // 讀取資料
+//   const longboardStores = await getLongboardStores()
+//   const playgrounds = await getPlaygrounds()
+//   const storeCitys = _.groupBy(longboardStores, 'city')
+//   const groundCitys = _.groupBy(playgrounds, 'city')
 
-const getStores = async () => {
-  // 讀取資料
-  const longboardStores = await getLongboardStores()
-  const playgrounds = await getPlaygrounds()
-  const storeCitys = _.groupBy(longboardStores, 'city')
-  const groundCitys = _.groupBy(playgrounds, 'city')
+//   bot.on('message', event => {
+//     const message = event.message.text
+//     switch (message) {
+//       case '在測試什麼': event.reply("改用 @line/bot-sdk")
+//         break
+//       default:
+//         if (!_.get(storeCitys, message)) {
+//           event.reply(`我沒有${message}的資料哦`)
+//           return
+//         }
+//         const stores = _.filter(longboardStores, store => { return store.city === message })
+//         event.reply(_.map(stores, 'name'))
+//     }
+//   })
+// }
 
-  bot.on('message', event => {
-    const message = event.message.text
-    switch (message) {
-      case '在測試什麼': event.reply("回覆該縣市有的長板店家")
-        break
-      default:
-        if (!_.get(storeCitys, message)) {
-          event.reply(`我沒有${message}的資料哦`)
-          return
-        }
-        const stores = _.filter(longboardStores, store => { return store.city === message })
-        event.reply(_.map(stores, 'name'))
-    }
+// getStores()
+const client = new line.Client(config);
+const handleEvent = event => {
+  return client.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `handleEvent test ${event.message.text}`
   })
 }
 
-getStores()
-
-const app = express()
-const linebotParser = bot.parser();
-app.post('/', linebotParser);
+// const linebotParser = client.parser();
+app.post('/', line.middleware(config), (req, res) => {
+  console.log('req')
+  console.log(req.body)
+  Promise
+    .all(req.body.events.map(handleEvent))
+    .then((result) => { res.json(result) })
+});
 
 app.listen(process.env.PORT || 3000, async () => {
   console.log('Express server start')
