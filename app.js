@@ -4,7 +4,6 @@ const line = require('@line/bot-sdk')
 
 const _ = require('lodash')
 const { getLongboardStores, getPlaygrounds } = require('./getData')
-// const flexMsgStores = require('./flexMessage')()
 
 const app = express() // 取得 express 實體
 const config = {
@@ -24,24 +23,33 @@ const getStores = async () => {
 getStores()
 const client = new line.Client(config);
 const handleEvent = event => {
-  console.log(event)
+  // console.log(event)
   if (event.type !== "message" || event.message.type !== "text") {
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: '這我看某@@ 請傳送其他文字訊息'
+      text: '這我看某@@\n\n如果你要尋找板店，請輸入縣市名稱(ex:台中)\n如果你要尋找玩板場地，請輸入縣市名稱+玩板(ex:台中玩板)'
     })
   }
 
   const message = event.message.text
-  if (!_.get(storeCitys, message)) {
+  if (!_.get(storeCitys, message) && !_.get(groundCitys, message)) {
+    // TODO 給使用者表單填寫新資料
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: `我沒有${message}的資料哦`
+      text: `我沒有「${message}」的資料哦\n\n如果你要尋找板店，請輸入縣市名稱(ex:台中)\n如果你要尋找玩板場地，請輸入縣市名稱+玩板(ex:台中玩板)\n現有的資訊有台中、高雄、屏東`
     })
   }
 
-  const stores = _.filter(longboardStores, store => { return store.city === message })
-  return client.replyMessage(event.replyToken, exports.flexMsgStores(message, stores))
+  // 玩板場地
+  const reGround = /(.){2}玩板$/
+  if (reGround.test(message)) {
+    const grounds = _.get(groundCitys, message)
+    return client.replyMessage(event.replyToken, exports.flexMsg('ground', message, grounds))
+  }
+
+  // 長板店家
+  const stores = _.get(storeCitys, message)
+  return client.replyMessage(event.replyToken, exports.flexMsg('store', message, stores))
 }
 
 app.post('/', line.middleware(config), (req, res) => {
@@ -49,7 +57,6 @@ app.post('/', line.middleware(config), (req, res) => {
     .all(req.body.events.map(handleEvent))
     .then((result) => { res.json(result) })
     .catch(err => {
-      console.log('err')
       console.log(err)
     })
 });
@@ -101,7 +108,7 @@ const storeDetail = store => ({
         },
         {
           type: "text",
-          text: store.address,
+          text: store.address === '' ? '我也不知道在哪裡XD' : store.address,
           size: "sm",
           flex: 5
         }
@@ -122,7 +129,7 @@ const storeDetail = store => ({
         },
         {
           type: "text",
-          text: _.replace(store.group_activity, ';', '\n'),
+          text: _.replace(store.group_activity, ';', '\n') === '' ? "我不曉得他們的團練時間..." : _.replace(store.group_activity, ';', '\n'),
           size: "sm",
           flex: 5,
           wrap: true
@@ -136,30 +143,96 @@ const storeDetail = store => ({
   ]
 })
 
-exports.flexMsgStores = (city, stores) => ({
+const groundDetail = ground => ({
+  type: "box",
+  layout: "vertical",
+  margin: "lg",
+  spacing: "sm",
+  contents: [
+    {
+      type: "box",
+      layout: "baseline",
+      spacing: "sm",
+      contents: [
+        {
+          color: "#aaaaaa",
+          flex: 1,
+          size: "sm",
+          text: "場地",
+          type: "text",
+          wrap: true,
+        },
+        {
+          type: "text",
+          text: ground.name,
+          size: "sm",
+          flex: 5
+        }
+      ]
+    },
+    {
+      type: "box",
+      layout: "baseline",
+      spacing: "sm",
+      contents: [
+        {
+          color: "#aaaaaa",
+          flex: 1,
+          size: "sm",
+          text: "地址",
+          type: "text",
+          wrap: true,
+        },
+        {
+          type: "text",
+          text: ground.address === '' ? '我也不知道在哪裡XD' : ground.address,
+          size: "sm",
+          flex: 5
+        }
+      ]
+    },
+    {
+      type: "separator",
+      margin: "md"
+    }
+  ]
+})
+
+exports.flexMsg = (type, city, details) => ({
   type: 'flex',
-  altText: `我知道${city}有這些板店！提供給你參考參考~`,
+  altText: type === "store" ? `我知道${city}有這些板店！提供給你參考參考～` : `想來${city}嗎？這些場地給你參考參考～`,
   contents: {
     type: "bubble",
     header: {
       type: "box",
-      layout: "vertical",
-      contents: [
-        {
-          type: "text",
-          text: `${city}-板店`,
-          weight: "bold",
-          size: "xl",
-          color: "#ffffff",
-        },
-      ],
+      layout: 'vertical',
       backgroundColor: "#98d6ea",
+      contents: [{
+        type: "text",
+        text: type === "store" ? `${city}-板店` : city,
+        weight: "bold",
+        size: "xl",
+        color: "#ffffff",
+      }],
     },
     body: {
       type: "box",
       layout: "vertical",
       contents: [
-        ..._.map(stores, storeDetail)
+        ..._.map(details, type === "store" ? storeDetail : groundDetail)
+      ]
+    },
+    footer: {
+      type: "box",
+      layout: "vertical",
+      contents: [
+        {
+          type: "text",
+          text: "以上資料僅供參考",
+          color: "#aaaaaa",
+          align: "center",
+          size: "sm"
+        }
       ]
     }
   }
