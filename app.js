@@ -20,36 +20,35 @@ const getStores = async () => {
   groundCitys = _.groupBy(playgrounds, 'city')
 }
 
-getStores()
 const client = new line.Client(config);
+const notFountMsg = '尋找板店：\n請輸入縣市名稱(ex:台中)，目前的資訊有台中、高雄、屏東\n\n尋找玩板場地：\n請輸入縣市名稱+玩板(ex:台中玩板)，目前的資訊有台中、高雄、基隆'
+getStores()
+
 const handleEvent = event => {
-  // console.log(event)
+  console.log(event)
   if (event.type !== "message" || event.message.type !== "text") {
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: '這我看某@@\n\n如果你要尋找板店，請輸入縣市名稱(ex:台中)\n如果你要尋找玩板場地，請輸入縣市名稱+玩板(ex:台中玩板)'
+      text: `這我看某@@\n\n${notFountMsg}`
     })
   }
 
-  const message = event.message.text
-  if (!_.get(storeCitys, message) && !_.get(groundCitys, message)) {
-    // TODO 給使用者表單填寫新資料
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: `我沒有「${message}」的資料哦\n\n如果你要尋找板店，請輸入縣市名稱(ex:台中)\n如果你要尋找玩板場地，請輸入縣市名稱+玩板(ex:台中玩板)\n現有的資訊有台中、高雄、屏東`
-    })
+  // 沒有此查詢資料
+  const msg = event.message.text
+  if (!_.get(storeCitys, msg) && !_.get(groundCitys, msg)) {
+    return client.replyMessage(event.replyToken, exports.notFound(msg, notFountMsg))
   }
 
   // 玩板場地
   const reGround = /(.){2}玩板$/
-  if (reGround.test(message)) {
-    const grounds = _.get(groundCitys, message)
-    return client.replyMessage(event.replyToken, exports.flexMsg('ground', message, grounds))
+  if (reGround.test(msg)) {
+    const grounds = _.get(groundCitys, msg)
+    return client.replyMessage(event.replyToken, exports.flexMsg('ground', msg, grounds))
   }
 
   // 長板店家
-  const stores = _.get(storeCitys, message)
-  return client.replyMessage(event.replyToken, exports.flexMsg('store', message, stores))
+  const stores = _.get(storeCitys, msg)
+  return client.replyMessage(event.replyToken, exports.flexMsg('store', msg, stores))
 }
 
 app.post('/', line.middleware(config), (req, res) => {
@@ -57,7 +56,7 @@ app.post('/', line.middleware(config), (req, res) => {
     .all(req.body.events.map(handleEvent))
     .then((result) => { res.json(result) })
     .catch(err => {
-      console.log(err)
+      console.log(err.message)
     })
 });
 
@@ -65,6 +64,38 @@ app.listen(process.env.PORT || 3000, async () => {
   console.log('Express server start')
 });
 
+exports.notFound = (msg, notFountMsg) => ({
+  type: 'flex',
+  altText: `抱歉，我沒有「${msg}」的資料哦`,
+  contents: {
+    type: "bubble",
+    body: {
+      type: "box",
+      layout: "horizontal",
+      contents: [{
+        type: "text",
+        text: `抱歉，我沒有「${msg}」的資料哦\n\n${notFountMsg}`,
+        size: "sm",
+        wrap: true
+      }]
+    },
+    footer: {
+      type: "box",
+      layout: "vertical",
+      contents: [{
+        color: "#98d6ea",
+        height: "sm",
+        style: "primary",
+        type: "button",
+        action: {
+          type: "uri",
+          label: "我願意提供資訊",
+          uri: "https://forms.gle/ZyBcucrQEUMB9RWf8?openExternalBrowser=1"
+        },
+      }],
+    }
+  }
+})
 
 const storeDetail = store => ({
   type: "box",
@@ -179,7 +210,7 @@ const groundDetail = ground => ({
           color: "#aaaaaa",
           flex: 1,
           size: "sm",
-          text: "地址",
+          text: "位於",
           type: "text",
           wrap: true,
         },
@@ -209,7 +240,7 @@ exports.flexMsg = (type, city, details) => ({
       backgroundColor: "#98d6ea",
       contents: [{
         type: "text",
-        text: type === "store" ? `${city}-板店` : city,
+        text: type === "store" ? `${city}板店` : city,
         weight: "bold",
         size: "xl",
         color: "#ffffff",
@@ -251,7 +282,7 @@ exports.flexMsg = (type, city, details) => ({
 //     city: '台中',
 //     name: 'Mafia Collective',
 //     address: '台中市北區三民路三段89巷32號',
-//     group_activity: '禮拜五 20:00 - 23:00(平地);禮拜? ?:?(下坡)'
+//     group_activity: '禮拜五 20:00 - 23:00'
 //   },
 //   {
 //     city: '高雄',
