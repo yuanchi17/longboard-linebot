@@ -22,33 +22,36 @@ const getStores = async () => {
 
 const client = new line.Client(config);
 const notFountMsg = '尋找板店：\n請輸入縣市名稱(ex:台中)，目前的資訊有台中、高雄、屏東\n\n尋找玩板場地：\n請輸入縣市名稱+玩板(ex:台中玩板)，目前的資訊有台中、高雄、基隆'
-getStores()
 
-const handleEvent = event => {
+const handleEvent = async event => {
   console.log(event)
-  if (event.type !== "message" || event.message.type !== "text") {
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: `這我看某@@\n\n${notFountMsg}`
-    })
-  }
+  switch (event.type) {
+    case 'follow':
+      const profile = await client.getProfile(event.source.userId)
+      return client.replyMessage(event.replyToken, exports.flexText(`Hi~${profile.displayName}！\n這是一個嘗試創建 chatbot 的小作品，主要目的為推廣長板運動\n\n試著傳送「台中」，看看台中有哪些滑板店吧！`))
 
-  // 沒有此查詢資料
-  const msg = event.message.text
-  if (!_.get(storeCitys, msg) && !_.get(groundCitys, msg)) {
-    return client.replyMessage(event.replyToken, exports.notFound(msg, notFountMsg))
-  }
+    case 'message':
+      const msg = event.message.text
+      if (event.message.type !== "text" || (!_.get(storeCitys, msg) && !_.get(groundCitys, msg))) {
+        // 沒有此查詢資料
+        msg = !msg ? exports.flexText(`這我看某QQ\n\n${notFountMsg}`) : exports.notFound(msg, notFountMsg)
+        return client.replyMessage(event.replyToken, msg)
+      }
 
-  // 玩板場地
-  const reGround = /(.){2}玩板$/
-  if (reGround.test(msg)) {
-    const grounds = _.get(groundCitys, msg)
-    return client.replyMessage(event.replyToken, exports.flexMsg('ground', msg, grounds))
-  }
+      // 玩板場地
+      const reGround = /(.){2}玩板$/
+      if (reGround.test(msg)) {
+        const grounds = _.get(groundCitys, msg)
+        return client.replyMessage(event.replyToken, exports.flexMsg('ground', msg, grounds))
+      }
 
-  // 長板店家
-  const stores = _.get(storeCitys, msg)
-  return client.replyMessage(event.replyToken, exports.flexMsg('store', msg, stores))
+      // 長板店家
+      const stores = _.get(storeCitys, msg)
+      return client.replyMessage(event.replyToken, exports.flexMsg('store', msg, stores))
+
+    default:
+      return
+  }
 }
 
 app.post('/', line.middleware(config), (req, res) => {
@@ -61,8 +64,11 @@ app.post('/', line.middleware(config), (req, res) => {
 });
 
 app.listen(process.env.PORT || 3000, async () => {
+  getStores()
   console.log('Express server start')
 });
+
+exports.flexText = msg => ({ type: 'text', text: msg })
 
 exports.notFound = (msg, notFountMsg) => ({
   type: 'flex',
@@ -300,8 +306,15 @@ exports.flexMsg = (type, city, details) => ({
 
 // playgrounds
 // [
-//   { city: '台中', name: '文心秀泰重劃區(金錢豹對面)', address: '' },
-//   { city: '台中', name: '台中市政府地下停車場(B2)', address: '' }
+//   { city: '台中玩板', name: '文心秀泰', address: '文心秀泰重劃區(金錢豹對面)' },
+//   { city: '台中玩板', name: 'B2', address: '台中市政府地下停車場(B2)' },
+//   { city: '台中玩板', name: '廣福橋下', address: '廣福橋下籃球場' },
+//   { city: '台中玩板', name: '台中公園', address: '台中公園光復國小操場' },
+//   { city: '台中玩板', name: '精武橋下', address: '精武車站旁邊橋下' },
+//   { city: '台中玩板', name: '台鐵橋下', address: '南京東路與興進路交叉口' },
+//   { city: '高雄玩板', name: '凹子底', address: '高雄市鼓山區明誠三路588號' },
+//   { city: '高雄玩板', name: '科工館', address: '' },
+//   { city: '高雄玩板', name: '十全立體停車場', address: '' },
 // ]
 
 // storeCitys
@@ -338,8 +351,17 @@ exports.flexMsg = (type, city, details) => ({
 
 // groundCitys
 // {
-//   '台中': [
-//     { city: '台中', name: '文心秀泰重劃區(金錢豹對面)', address: '' },
-//     { city: '台中', name: '台中市政府地下停車場(B2)', address: '' }
-//   ]
+//   '台中玩板': [
+//     { city: '台中玩板', name: '文心秀泰', address: '文心秀泰重劃區(金錢豹對面)' },
+//     { city: '台中玩板', name: 'B2', address: '台中市政府地下停車場(B2)' },
+//     { city: '台中玩板', name: '廣福橋下', address: '廣福橋下籃球場' },
+//     { city: '台中玩板', name: '台中公園', address: '台中公園光復國小操場' },
+//     { city: '台中玩板', name: '精武橋下', address: '精武車站旁邊橋下' },
+//     { city: '台中玩板', name: '台鐵橋下', address: '南京東路與興進路交叉口' }
+//   ],
+//   '高雄玩板': [
+//     { city: '高雄玩板', name: '凹子底', address: '高雄市鼓山區明誠三路588號' },
+//     { city: '高雄玩板', name: '科工館', address: '' },
+//     { city: '高雄玩板', name: '十全立體停車場', address: '' }
+//   ],
 // }
