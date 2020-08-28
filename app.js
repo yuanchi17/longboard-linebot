@@ -4,7 +4,7 @@ const line = require('@line/bot-sdk')
 
 const _ = require('lodash')
 const { getLongboardStores, getPlaygrounds } = require('./getData')
-const flexText = require('./views/flexText').default
+const flexText = require('./views/flexText')
 const notFound = require('./views/notFound')
 const storesOrPlaygrounds = require('./views/flexMessage')
 
@@ -33,10 +33,10 @@ const handleEvent = async event => {
       return client.replyMessage(event.replyToken, flexText(`Hi~${profile.displayName}！\n這是一個嘗試創建 chatbot 的小作品，主要目的為推廣長板運動\n\n試著傳送「台中」，看看台中有哪些滑板店吧！`))
 
     case 'message':
-      const msg = event.message.text
+      let msg = event.message.text
       if (event.message.type !== "text" || (!_.get(storeCitys, msg) && !_.get(groundCitys, msg))) {
         // 沒有此查詢資料
-        msg = !msg ? flexText(`這我看某QQ`) : notFound(msg)
+        msg = event.message.type === "text" ? notFound(msg) : flexText('這我看某QQ')
         return client.replyMessage(event.replyToken, msg)
       }
 
@@ -62,6 +62,7 @@ app.post('/', line.middleware(config), (req, res) => {
     .then((result) => { res.json(result) })
     .catch(err => {
       console.log(err.message)
+      flexText(err.message)
     })
 })
 
