@@ -3,10 +3,11 @@ const express = require('express') // 伺服器端用的模組
 const line = require('@line/bot-sdk')
 
 const _ = require('lodash')
-const { getLongboardStores, getPlaygrounds } = require('./getData')
+const { getLongboardStores, getPlaygrounds, getTypeDetail } = require('./getData')
+const boardType = require('./views/typeDetail')
 const flexText = require('./views/flexText')
 const notFound = require('./views/notFound')
-const storesOrPlaygrounds = require('./views/flexMessage')
+const storesOrPlaygrounds = require('./views/storesOrPlaygrounds')
 
 const app = express() // 取得 express 實體
 const config = {
@@ -19,6 +20,7 @@ const config = {
 const getStores = async () => {
   longboardStores = await getLongboardStores()
   playgrounds = await getPlaygrounds()
+  typeDetails = await getTypeDetail()
   storeCitys = _.groupBy(longboardStores, 'city')
   groundCitys = _.groupBy(playgrounds, 'city')
 }
@@ -34,10 +36,17 @@ const handleEvent = async event => {
 
     case 'message':
       let msg = event.message.text
-      if (event.message.type !== "text" || (!_.get(storeCitys, msg) && !_.get(groundCitys, msg))) {
+      if (event.message.type !== "text") {
+        return client.replyMessage(event.replyToken, flexText('這我看某QQ'))
+      }
+
+      if (msg === '種類介紹') {
+        return client.replyMessage(event.replyToken, boardType(typeDetails))
+      }
+
+      if (!_.get(storeCitys, msg) && !_.get(groundCitys, msg)) {
         // 沒有此查詢資料
-        msg = event.message.type === "text" ? notFound(msg) : flexText('這我看某QQ')
-        return client.replyMessage(event.replyToken, msg)
+        return client.replyMessage(event.replyToken, notFound(msg))
       }
 
       // 玩板場地
@@ -61,13 +70,12 @@ app.post('/', line.middleware(config), (req, res) => {
     .all(req.body.events.map(handleEvent))
     .then((result) => { res.json(result) })
     .catch(err => {
-      console.log(err.message)
-      flexText(err.message)
+      console.log(err)
     })
 })
 
 app.listen(process.env.PORT || 3000, async () => {
-  getStores()
+  await getStores()
   console.log('Express server start')
 })
 
