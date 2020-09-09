@@ -58,11 +58,7 @@ const handleEvent = async event => {
         const allCitys = [[]]
         for (let city of richmenuActionType[msg].citys) {
           for (let i in allCitys) {
-            if (allCitys[i] < 3) {
-              allCitys[i].push(city)
-              continue
-            }
-            allCitys[i].push([city])
+            allCitys[i].push(allCitys[i].length < 3 ? city : [city])
           }
         }
         richmenuActionType[msg].citys = allCitys
