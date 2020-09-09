@@ -30,8 +30,8 @@ const client = new line.Client(config)
 
 const handleEvent = async event => {
   console.log(event)
-  const richmenuAction = {
-    '玩板店家': {
+  const richmenuActionType = {
+    '滑板店家': {
       citys: _.keys(storeCitys),
       image: 'https://i.imgur.com/geuwlVu.png',
     },
@@ -54,9 +54,9 @@ const handleEvent = async event => {
 
       // 主選單的按鈕
       if (msg === '種類介紹') return client.replyMessage(event.replyToken, boardType(typeDetails))
-      if (_.get(richmenuAction, msg)) {
+      if (_.get(richmenuActionType, msg)) {
         const allCitys = [[]]
-        for (let city of richmenuAction[msg].citys) {
+        for (let city of richmenuActionType[msg].citys) {
           for (let i in allCitys) {
             if (allCitys[i] < 3) {
               allCitys[i].push(city)
@@ -65,9 +65,9 @@ const handleEvent = async event => {
             allCitys[i].push([city])
           }
         }
-        richmenuAction[msg].citys = allCitys
-        console.log(richmenuAction[msg])
-        return client.replyMessage(event.replyToken, richmenuAction({ title: msg, type: richmenuAction[msg] }))
+        richmenuActionType[msg].citys = allCitys
+        console.log(richmenuActionType[msg])
+        return client.replyMessage(event.replyToken, richmenuAction({ title: msg, type: richmenuActionType[msg] }))
       }
 
       if (!_.get(storeCitys, msg) && !_.get(groundCitys, msg)) {
