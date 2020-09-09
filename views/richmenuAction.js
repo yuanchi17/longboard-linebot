@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 module.exports = ({ title, type }) => ({
   type: 'flex',
   altText: `快來看看這些市區的滑板店家在哪裡吧！`,
