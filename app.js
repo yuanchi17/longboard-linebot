@@ -4,9 +4,10 @@ const line = require('@line/bot-sdk')
 
 const _ = require('lodash')
 const { getLongboardStores, getPlaygrounds, getTypeDetail } = require('./getData')
-const boardType = require('./views/typeDetail')
+const boardType = require('./views/boardType')
 const flexText = require('./views/flexText')
 const notFound = require('./views/notFound')
+const richmenuAction = require('./views/richmenuAction')
 const storesOrPlaygrounds = require('./views/storesOrPlaygrounds')
 
 const app = express() // 取得 express 實體
@@ -29,6 +30,17 @@ const client = new line.Client(config)
 
 const handleEvent = async event => {
   console.log(event)
+  const richmenuAction = {
+    '玩板店家': {
+      citys: _.keys(storeCitys),
+      image: 'https://i.imgur.com/geuwlVu.png',
+    },
+    '玩板場地': {
+      citys: _.keys(groundCitys),
+      image: 'https://i.imgur.com/iWD2F5o.png',
+    }
+  }
+
   switch (event.type) {
     case 'follow':
       const profile = await client.getProfile(event.source.userId)
@@ -40,8 +52,22 @@ const handleEvent = async event => {
         return client.replyMessage(event.replyToken, flexText('這我看某QQ'))
       }
 
-      if (msg === '種類介紹') {
-        return client.replyMessage(event.replyToken, boardType(typeDetails))
+      // 主選單的按鈕
+      if (msg === '種類介紹') return client.replyMessage(event.replyToken, boardType(typeDetails))
+      if (_.get(richmenuAction, msg)) {
+        const allCitys = [[]]
+        for (let city of richmenuAction[msg].citys) {
+          for (let i in allCitys) {
+            if (allCitys[i] < 3) {
+              allCitys[i].push(city)
+              continue
+            }
+            allCitys[i].push([city])
+          }
+        }
+        richmenuAction[msg].citys = allCitys
+        console.log(richmenuAction[msg])
+        return client.replyMessage(event.replyToken, richmenuAction({ title: msg, type: richmenuAction[msg] }))
       }
 
       if (!_.get(storeCitys, msg) && !_.get(groundCitys, msg)) {
