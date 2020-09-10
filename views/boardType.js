@@ -1,3 +1,5 @@
+const color = require('../color')()
+
 const detail = typeDetail => ({
   type: "bubble",
   hero: {
@@ -32,7 +34,7 @@ const detail = typeDetail => ({
                 type: "text",
                 text: `板身約 ${typeDetail.length} 吋`,
                 wrap: true,
-                color: "#666666",
+                color: color.gray,
                 size: "sm"
               }
             ]
@@ -45,7 +47,7 @@ const detail = typeDetail => ({
               {
                 type: "text",
                 text: "優點：",
-                color: "#666666",
+                color: color.gray,
                 size: "sm",
                 flex: 1
               },
@@ -53,7 +55,7 @@ const detail = typeDetail => ({
                 type: "text",
                 text: typeDetail.feature,
                 wrap: true,
-                color: "#666666",
+                color: color.gray,
                 size: "sm",
                 flex: 5
               }
@@ -68,7 +70,7 @@ const detail = typeDetail => ({
                 type: "text",
                 text: "玩法：",
                 wrap: true,
-                color: "#666666",
+                color: color.gray,
                 size: "sm",
                 flex: 1
               },
@@ -76,7 +78,7 @@ const detail = typeDetail => ({
                 type: "text",
                 text: typeDetail.play_type,
                 wrap: true,
-                color: "#666666",
+                color: color.gray,
                 size: "sm",
                 flex: 5
               }

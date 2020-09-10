@@ -1,3 +1,5 @@
+const color = require('../color')()
+
 module.exports = msg => ({
   type: 'flex',
   altText: `抱歉，我沒有「${msg}」的資料哦`,
@@ -8,7 +10,7 @@ module.exports = msg => ({
       layout: "horizontal",
       contents: [{
         type: "text",
-        text: `抱歉，我沒有「${msg}」的資料哦😓\n\n請點選下方的主選單進行查詢，若想提供更多資訊請點擊下方「讓我來告訴你」，小編將不定時更新資料😄`,
+        text: `抱歉，我沒有「${msg}」的資料哦😓\n\n請點選下方的主選單進行查詢，若想提供更多資訊，請點擊下方「讓我來告訴你」，小編將不定時更新資料😄`,
         size: "sm",
         wrap: true
       }]
@@ -17,7 +19,7 @@ module.exports = msg => ({
       type: "box",
       layout: "vertical",
       contents: [{
-        color: "#98d6ea",
+        color: color.blue,
         height: "sm",
         style: "primary",
         type: "button",

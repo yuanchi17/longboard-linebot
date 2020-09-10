@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const color = require('../color')()
 
 const storeDetail = store => ({
   type: "box",
@@ -12,7 +13,7 @@ const storeDetail = store => ({
       spacing: "sm",
       contents: [
         {
-          color: "#aaaaaa",
+          color: color.gray,
           flex: 1,
           size: "sm",
           text: "店名",
@@ -33,7 +34,7 @@ const storeDetail = store => ({
       spacing: "sm",
       contents: [
         {
-          color: "#aaaaaa",
+          color: color.gray,
           flex: 1,
           size: "sm",
           text: "地址",
@@ -54,7 +55,7 @@ const storeDetail = store => ({
       spacing: "sm",
       contents: [
         {
-          color: "#aaaaaa",
+          color: color.gray,
           flex: 1,
           size: "sm",
           text: "團練",
@@ -89,7 +90,7 @@ const groundDetail = ground => ({
       spacing: "sm",
       contents: [
         {
-          color: "#aaaaaa",
+          color: color.gray,
           flex: 1,
           size: "sm",
           text: "場地",
@@ -110,7 +111,7 @@ const groundDetail = ground => ({
       spacing: "sm",
       contents: [
         {
-          color: "#aaaaaa",
+          color: color.gray,
           flex: 1,
           size: "sm",
           text: "位於",
@@ -140,13 +141,13 @@ module.exports = (type, city, details) => ({
     header: {
       type: "box",
       layout: 'vertical',
-      backgroundColor: "#98d6ea",
+      backgroundColor: color.blue,
       contents: [{
         type: "text",
         text: type === "store" ? `${city}板店` : city,
         weight: "bold",
         size: "xl",
-        color: "#ffffff",
+        color: color.white,
       }],
     },
     body: {
@@ -163,7 +164,7 @@ module.exports = (type, city, details) => ({
         {
           type: "text",
           text: "以上資料僅供參考",
-          color: "#aaaaaa",
+          color: color.gray,
           align: "center",
           size: "sm"
         }

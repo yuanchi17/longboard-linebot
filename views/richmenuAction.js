@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const color = require('../color')()
 
 module.exports = ({ title, type }) => ({
   type: 'flex',
@@ -6,7 +7,7 @@ module.exports = ({ title, type }) => ({
   contents: {
     type: 'bubble',
     header: {
-      backgroundColor: '#98d6ea',
+      backgroundColor: color.blue,
       layout: 'vertical',
       paddingBottom: '8px',
       paddingTop: '8px',
@@ -33,7 +34,7 @@ module.exports = ({ title, type }) => ({
           type: 'box',
           contents: [
             {
-              color: '#ffffff',
+              color: color.white,
               flex: 1,
               gravity: 'center',
               size: 'xl',
@@ -77,19 +78,19 @@ module.exports = ({ title, type }) => ({
       contents: [
         {
           align: 'center',
-          color: '#aaaaaa',
+          color: color.gray,
           size: 'sm',
           text: '什麼！你還知道更多地方？',
           type: 'text',
         },
         {
-          color: '#98d6ea',
+          color: color.blue,
           height: 'sm',
           style: 'primary',
           type: 'button',
           action: {
             type: 'uri',
-            label: '哈 你知道的太少了',
+            label: '哈 讓我來告訴你吧',
             uri: 'https://forms.gle/ZyBcucrQEUMB9RWf8?openExternalBrowser=1'
           },
         }
