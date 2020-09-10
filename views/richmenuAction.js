@@ -49,6 +49,7 @@ module.exports = ({ title, type }) => ({
       layout: 'vertical',
       spacing: 'md',
       type: 'box',
+      paddingBottom: '0px',
       contents: [
         ..._.map(type.citys, citys => ({
           layout: 'horizontal',
@@ -61,7 +62,7 @@ module.exports = ({ title, type }) => ({
               type: 'button',
               action: {
                 label: city,
-                text: title === '滑板店家' ? city : `${city}+玩板`,
+                text: title === '滑板店家' ? city : `${city}玩板`,
                 type: 'message',
               },
             }))
@@ -69,5 +70,30 @@ module.exports = ({ title, type }) => ({
         }))
       ],
     },
+    footer: {
+      layout: 'vertical',
+      spacing: 'sm',
+      type: 'box',
+      contents: [
+        {
+          align: 'center',
+          color: '#aaaaaa',
+          size: 'sm',
+          text: '什麼！你還知道更多地方？',
+          type: 'text',
+        },
+        {
+          color: '#98d6ea',
+          height: 'sm',
+          style: 'primary',
+          type: 'button',
+          action: {
+            type: 'uri',
+            label: '哈 你知道的太少了',
+            uri: 'https://forms.gle/ZyBcucrQEUMB9RWf8?openExternalBrowser=1'
+          },
+        }
+      ],
+    }
   }
 })
