@@ -36,7 +36,7 @@ const handleEvent = async event => {
       image: 'https://i.imgur.com/geuwlVu.png',
     },
     '玩板場地': {
-      citys: _.keys(groundCitys),
+      citys: _.map(_.keys(groundCitys), c => { return _.replace(c, '玩板', '') }),
       image: 'https://i.imgur.com/iWD2F5o.png',
     }
   }
