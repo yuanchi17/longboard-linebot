@@ -43,7 +43,7 @@ const storeDetail = store => ({
         },
         {
           type: "text",
-          text: store.address === '' ? '我也不知道在哪裡XD' : store.address,
+          text: store.address === '' ? '我不知道確切位置' : store.address,
           size: "sm",
           flex: 5
         }
@@ -64,7 +64,7 @@ const storeDetail = store => ({
         },
         {
           type: "text",
-          text: _.replace(store.group_activity, ';', '\n') === '' ? "我不曉得他們的團練時間..." : _.replace(store.group_activity, ';', '\n'),
+          text: _.replace(store.group_activity, /;/g, '\n') === '' ? "我不曉得他們的團練時間" : _.replace(store.group_activity, ';', '\n'),
           size: "sm",
           flex: 5,
           wrap: true
