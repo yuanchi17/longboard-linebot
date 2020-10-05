@@ -1,9 +1,9 @@
 const _ = require('lodash')
-const color = require('../color')()
+const { color } = require('../libs/helpers')
 
 module.exports = ({ title, type }) => ({
   type: 'flex',
-  altText: title === '滑板店家' ? `快來看看這些市區的滑板店家在哪裡吧！` : `快來看看這些市區哪裡可以玩板吧！`,
+  altText: title === '滑板店家' ? '快來看看這些市區的滑板店家在哪裡吧！' : '快來看看這些市區哪裡可以玩板吧！',
   contents: {
     type: 'bubble',
     header: {
@@ -66,9 +66,9 @@ module.exports = ({ title, type }) => ({
                 text: title === '滑板店家' ? city : `${city}玩板`,
                 type: 'message',
               },
-            }))
+            })),
           ],
-        }))
+        })),
       ],
     },
     footer: {
@@ -91,10 +91,10 @@ module.exports = ({ title, type }) => ({
           action: {
             type: 'uri',
             label: '哈 讓我來告訴你吧',
-            uri: 'https://forms.gle/ZyBcucrQEUMB9RWf8?openExternalBrowser=1'
+            uri: 'https://forms.gle/ZyBcucrQEUMB9RWf8?openExternalBrowser=1',
           },
-        }
+        },
       ],
-    }
-  }
+    },
+  },
 })

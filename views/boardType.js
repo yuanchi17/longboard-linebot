@@ -1,93 +1,93 @@
-const color = require('../color')()
+const { color } = require('../libs/helpers')
 
 const detail = typeDetail => ({
-  type: "bubble",
+  type: 'bubble',
   hero: {
-    type: "image",
+    type: 'image',
     url: typeDetail.image,
-    aspectRatio: "20:13",
-    aspectMode: "cover",
-    size: "full"
+    aspectRatio: '20:13',
+    aspectMode: 'cover',
+    size: 'full',
   },
   body: {
-    type: "box",
-    layout: "vertical",
+    type: 'box',
+    layout: 'vertical',
     contents: [
       {
-        type: "text",
+        type: 'text',
         text: typeDetail.name,
-        weight: "bold",
-        size: "xl"
+        weight: 'bold',
+        size: 'xl',
       },
       {
-        type: "box",
-        layout: "vertical",
-        margin: "lg",
-        spacing: "md",
+        type: 'box',
+        layout: 'vertical',
+        margin: 'lg',
+        spacing: 'md',
         contents: [
           {
-            type: "box",
-            layout: "baseline",
-            spacing: "sm",
+            type: 'box',
+            layout: 'baseline',
+            spacing: 'sm',
             contents: [
               {
-                type: "text",
+                type: 'text',
                 text: `板身約 ${typeDetail.length} 吋`,
                 wrap: true,
                 color: color.gray,
-                size: "sm"
-              }
-            ]
+                size: 'sm',
+              },
+            ],
           },
           {
-            type: "box",
-            layout: "baseline",
-            spacing: "sm",
+            type: 'box',
+            layout: 'baseline',
+            spacing: 'sm',
             contents: [
               {
-                type: "text",
-                text: "優點：",
+                type: 'text',
+                text: '優點：',
                 color: color.gray,
-                size: "sm",
-                flex: 1
+                size: 'sm',
+                flex: 1,
               },
               {
-                type: "text",
+                type: 'text',
                 text: typeDetail.feature,
                 wrap: true,
                 color: color.gray,
-                size: "sm",
-                flex: 5
-              }
-            ]
+                size: 'sm',
+                flex: 5,
+              },
+            ],
           },
           {
-            type: "box",
-            layout: "baseline",
-            spacing: "sm",
+            type: 'box',
+            layout: 'baseline',
+            spacing: 'sm',
             contents: [
               {
-                type: "text",
-                text: "玩法：",
+                type: 'text',
+                text: '玩法：',
                 wrap: true,
                 color: color.gray,
-                size: "sm",
-                flex: 1
+                size: 'sm',
+                flex: 1,
               },
               {
-                type: "text",
+                type: 'text',
                 text: typeDetail.play_type,
                 wrap: true,
                 color: color.gray,
-                size: "sm",
-                flex: 5
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+                size: 'sm',
+                flex: 5,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 })
 
 module.exports = typeDetails => ({
@@ -96,7 +96,7 @@ module.exports = typeDetails => ({
   contents: {
     type: 'carousel',
     contents: [
-      ...typeDetails.map(detail)
-    ]
-  }
+      ...typeDetails.map(detail),
+    ],
+  },
 })

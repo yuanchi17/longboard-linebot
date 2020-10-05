@@ -1,8 +1,11 @@
+require('dotenv').config() // process.env
+
 // 選擇 Heroku 作為伺服器
 const express = require('express') // 伺服器端用的模組
 const line = require('@line/bot-sdk')
 
 const _ = require('lodash')
+const { getenv } = require('./libs/helpers')
 const { getLongboardStores, getPlaygrounds, getTypeDetail } = require('./getData')
 const boardType = require('./views/boardType')
 const flexText = require('./views/flexText')
@@ -12,78 +15,74 @@ const storesOrPlaygrounds = require('./views/storesOrPlaygrounds')
 
 const app = express() // 取得 express 實體
 const config = {
-  channelId: '1654061086',
-  channelSecret: '1c8ef4723f515503e64fffb32592ce3b',
-  channelAccessToken: '2p1E0ii7rg0ThEJxfqcOD/6rLfM+BK8uix2W2J4G+ropOhxn8a72/euiCN8TvzweE2dAf8C8RonnfAYFrCAiuvrgJWKLLm1Icc8UvVbcDCq78DCA1OxlipxBEAHsbTJUphMQlfM4rRhm/CgtYcQp5gdB04t89/1O/w1cDnyilFU='
+  channelId: getenv('LINE_CHANNEL_ID'),
+  channelSecret: getenv('LINE_CHANNEL_SECRET'),
+  channelAccessToken: getenv('LINE_CHANNEL_ACCESSTOKEN'),
 }
 
 // 讀取資料
 const getStores = async () => {
-  longboardStores = await getLongboardStores()
-  playgrounds = await getPlaygrounds()
-  typeDetails = await getTypeDetail()
-  storeCitys = _.groupBy(longboardStores, 'city')
-  groundCitys = _.groupBy(playgrounds, 'city')
+  app.locals.longboardStores = await getLongboardStores()
+  app.locals.playgrounds = await getPlaygrounds()
+  app.locals.typeDetails = await getTypeDetail()
+  app.locals.storeCitys = _.groupBy(app.locals.longboardStores, 'city')
+  app.locals.groundCitys = _.groupBy(app.locals.playgrounds, 'city')
+}
+
+const richmenuActionType = {
+  滑板店家: {
+    citys: _.keys(app.locals.storeCitys),
+    image: 'https://i.imgur.com/geuwlVu.png',
+  },
+  玩板場地: {
+    citys: _.map(_.keys(app.locals.groundCitys), c => { return _.replace(c, '玩板', '') }),
+    image: 'https://i.imgur.com/iWD2F5o.png',
+  },
 }
 
 const client = new line.Client(config)
 
 const handleEvent = async event => {
   console.log(event)
-  const richmenuActionType = {
-    '滑板店家': {
-      citys: _.keys(storeCitys),
-      image: 'https://i.imgur.com/geuwlVu.png',
-    },
-    '玩板場地': {
-      citys: _.map(_.keys(groundCitys), c => { return _.replace(c, '玩板', '') }),
-      image: 'https://i.imgur.com/iWD2F5o.png',
-    }
-  }
-
+  let msg
+  const profile = await client.getProfile(event.source.userId)
+  const stores = _.get(app.locals.storeCitys, msg)
+  const reGround = /(.){2}玩板$/
   switch (event.type) {
     case 'follow':
-      const profile = await client.getProfile(event.source.userId)
       return client.replyMessage(event.replyToken, flexText(`Hi~${profile.displayName}！\n這是一個嘗試創建 chatbot 的小作品，主要目的為推廣長板運動\n\n試著傳送「台中」，看看台中有哪些滑板店吧！`))
 
     case 'message':
-      let msg = event.message.text
-      if (event.message.type !== "text") {
+      msg = event.message.text
+      if (event.message.type !== 'text') {
         return client.replyMessage(event.replyToken, flexText('這我看某QQ'))
       }
 
       // 主選單的按鈕
-      if (msg === '種類介紹') return client.replyMessage(event.replyToken, boardType(typeDetails))
+      if (msg === '種類介紹') return client.replyMessage(event.replyToken, boardType(app.locals.typeDetails))
       if (_.get(richmenuActionType, msg)) {
         const allCitys = [[]]
-        for (let city of richmenuActionType[msg].citys) {
-          for (let i in allCitys) {
+        for (const city of richmenuActionType[msg].citys) {
+          for (const i in allCitys) {
             allCitys[i].push(allCitys[i].length < 3 ? city : [city])
           }
         }
         richmenuActionType[msg].citys = allCitys
-        console.log(richmenuActionType[msg])
         return client.replyMessage(event.replyToken, richmenuAction({ title: msg, type: richmenuActionType[msg] }))
       }
 
-      if (!_.get(storeCitys, msg) && !_.get(groundCitys, msg)) {
-        // 沒有此查詢資料
-        return client.replyMessage(event.replyToken, notFound(msg))
-      }
-
+      // 沒有此查詢資料
+      if (!_.get(app.locals.storeCitys, msg) && !_.get(app.locals.groundCitys, msg)) return client.replyMessage(event.replyToken, notFound(msg))
       // 玩板場地
-      const reGround = /(.){2}玩板$/
       if (reGround.test(msg)) {
-        const grounds = _.get(groundCitys, msg)
+        const grounds = _.get(app.locals.groundCitys, msg)
         return client.replyMessage(event.replyToken, storesOrPlaygrounds('ground', msg, grounds))
       }
-
       // 長板店家
-      const stores = _.get(storeCitys, msg)
       return client.replyMessage(event.replyToken, storesOrPlaygrounds('store', msg, stores))
 
     default:
-      return
+      break
   }
 }
 

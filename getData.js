@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 const _ = require('lodash')
 const axios = require('axios')
 const Papa = require('papaparse')
