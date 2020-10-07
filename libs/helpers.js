@@ -7,8 +7,8 @@ exports.getenv = (key, defaultval) => {
   return _.get(process, ['env', key], defaultval)
 }
 
-exports.color = () => ({
+exports.color = {
   blue: '#98d6ea',
   gray: '#aaaaaa',
   white: '#ffffff',
-})
+}
