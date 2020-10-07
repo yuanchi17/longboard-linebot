@@ -11,13 +11,15 @@ exports.getCsv = async (url) => {
   }), 'data', [])
 }
 
-exports.getLongboardStores = async () => {
-  return await exports.getCsv('https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?gid=0&single=true&output=csv')
+exports.getLongboardStores = async app => {
+  const longboardStores = await exports.getCsv('https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?gid=0&single=true&output=csv')
+  app.locals.storeCitys = _.groupBy(longboardStores, 'city')
 }
 
-exports.getPlaygrounds = async () => {
-  return await exports.getCsv('https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?gid=2013906441&single=true&output=csv')
+exports.getPlaygrounds = async app => {
+  const playgrounds = await exports.getCsv('https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?gid=2013906441&single=true&output=csv')
+  app.locals.groundCitys = _.groupBy(playgrounds, 'city')
 }
-exports.getTypeDetail = async () => {
-  return await exports.getCsv('https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?gid=1813045536&single=true&output=csv')
+exports.getTypeDetail = async app => {
+  app.locals.typeDetails = await exports.getCsv('https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?gid=1813045536&single=true&output=csv')
 }

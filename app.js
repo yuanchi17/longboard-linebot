@@ -7,11 +7,8 @@ const line = require('@line/bot-sdk')
 const _ = require('lodash')
 const { getenv } = require('./libs/helpers')
 const { getLongboardStores, getPlaygrounds, getTypeDetail } = require('./getData')
-const boardType = require('./views/boardType')
 const flexText = require('./views/flexText')
 const notFound = require('./views/notFound')
-const richmenuAction = require('./views/richmenuAction')
-const storesOrPlaygrounds = require('./views/storesOrPlaygrounds')
 
 const app = express() // 取得 express 實體
 const config = {
@@ -22,35 +19,23 @@ const config = {
 
 // 讀取資料
 const getStores = async () => {
-  app.locals.longboardStores = await getLongboardStores()
-  app.locals.playgrounds = await getPlaygrounds()
-  app.locals.typeDetails = await getTypeDetail()
-  app.locals.storeCitys = _.groupBy(app.locals.longboardStores, 'city')
-  app.locals.groundCitys = _.groupBy(app.locals.playgrounds, 'city')
+  await Promise.all([
+    getLongboardStores(app),
+    getPlaygrounds(app),
+    getTypeDetail(app),
+  ])
 }
+getStores()
 
-const richmenuActionType = {
-  滑板店家: {
-    citys: _.keys(app.locals.storeCitys),
-    image: 'https://i.imgur.com/geuwlVu.png',
-  },
-  玩板場地: {
-    citys: _.map(_.keys(app.locals.groundCitys), c => { return _.replace(c, '玩板', '') }),
-    image: 'https://i.imgur.com/iWD2F5o.png',
-  },
-}
-console.log('config', config)
 const client = new line.Client(config)
 
 const handleEvent = async event => {
   console.log(event)
   let msg
   const profile = await client.getProfile(event.source.userId)
-  const stores = _.get(app.locals.storeCitys, msg)
-  const reGround = /(.){2}玩板$/
   switch (event.type) {
     case 'follow':
-      return client.replyMessage(event.replyToken, flexText(`Hi~${profile.displayName}！\n這是一個嘗試創建 chatbot 的小作品，主要目的為推廣長板運動\n\n試著傳送「台中」，看看台中有哪些滑板店吧！`))
+      return client.replyMessage(event.replyToken, flexText(`Hi~${profile.displayName}！\n這是一個嘗試創建 chatbot 的小作品，主要目的為推廣長板運動\n\n試著點主選單的按鈕查詢看看吧！`))
 
     case 'message':
       msg = event.message.text
@@ -59,27 +44,15 @@ const handleEvent = async event => {
       }
 
       // 主選單的按鈕
-      if (msg === '種類介紹') return client.replyMessage(event.replyToken, boardType(app.locals.typeDetails))
-      if (_.get(richmenuActionType, msg)) {
-        const allCitys = [[]]
-        for (const city of richmenuActionType[msg].citys) {
-          for (const i in allCitys) {
-            allCitys[i].push(allCitys[i].length < 3 ? city : [city])
-          }
-        }
-        richmenuActionType[msg].citys = allCitys
-        return client.replyMessage(event.replyToken, richmenuAction({ title: msg, type: richmenuActionType[msg] }))
-      }
-
-      // 沒有此查詢資料
-      if (!_.get(app.locals.storeCitys, msg) && !_.get(app.locals.groundCitys, msg)) return client.replyMessage(event.replyToken, notFound(msg))
+      if (msg === '種類介紹') return client.replyMessage(event.replyToken, require('./views/boardType')(app.locals.typeDetails))
+      if (msg === '滑板店家') return client.replyMessage(event.replyToken, require('./views/stores/list')(app.locals.storeCitys))
+      if (msg === '玩板場地') return client.replyMessage(event.replyToken, require('./views/grounds/list')(app.locals.groundCitys))
       // 玩板場地
-      if (reGround.test(msg)) {
-        const grounds = _.get(app.locals.groundCitys, msg)
-        return client.replyMessage(event.replyToken, storesOrPlaygrounds('ground', msg, grounds))
-      }
+      if (_.get(app.locals.storeCitys, msg) && /(.){2}玩板$/.test(msg)) return client.replyMessage(event.replyToken, require('./views/grounds/detail')(msg, app.locals.groundCitys))
       // 長板店家
-      return client.replyMessage(event.replyToken, storesOrPlaygrounds('store', msg, stores))
+      if (_.get(app.locals.groundCitys, msg)) client.replyMessage(event.replyToken, require('./views/stores/detail')(msg, app.locals.storeCitys))
+      // 沒有此查詢資料
+      return client.replyMessage(event.replyToken, notFound(msg))
 
     default:
       break
@@ -96,7 +69,6 @@ app.post('/', line.middleware(config), (req, res) => {
 })
 
 app.listen(process.env.PORT || 3000, async () => {
-  await getStores()
   console.log('Express server start')
 })
 

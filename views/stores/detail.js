@@ -1,7 +1,7 @@
 const _ = require('lodash')
-const { color } = require('../libs/helpers')
+const { color } = require('../../libs/helpers')
 
-const storeDetail = store => ({
+const detail = store => ({
   type: 'box',
   layout: 'vertical',
   margin: 'lg',
@@ -78,64 +78,9 @@ const storeDetail = store => ({
   ],
 })
 
-const groundDetail = ground => ({
-  type: 'box',
-  layout: 'vertical',
-  margin: 'lg',
-  spacing: 'sm',
-  contents: [
-    {
-      type: 'box',
-      layout: 'baseline',
-      spacing: 'sm',
-      contents: [
-        {
-          color: color.gray,
-          flex: 1,
-          size: 'sm',
-          text: '場地',
-          type: 'text',
-          wrap: true,
-        },
-        {
-          type: 'text',
-          text: ground.name,
-          size: 'sm',
-          flex: 5,
-        },
-      ],
-    },
-    {
-      type: 'box',
-      layout: 'baseline',
-      spacing: 'sm',
-      contents: [
-        {
-          color: color.gray,
-          flex: 1,
-          size: 'sm',
-          text: '位於',
-          type: 'text',
-          wrap: true,
-        },
-        {
-          type: 'text',
-          text: ground.address === '' ? '我也不知道在哪裡XD' : ground.address,
-          size: 'sm',
-          flex: 5,
-        },
-      ],
-    },
-    {
-      type: 'separator',
-      margin: 'md',
-    },
-  ],
-})
-
-module.exports = (type, city, details) => ({
+module.exports = (city, storeCitys) => ({
   type: 'flex',
-  altText: type === 'store' ? `我知道${city}有這些板店！提供給你參考參考～` : `想來${city}嗎？這些場地給你參考參考～`,
+  altText: `我知道${city}有這些板店！提供給你參考參考～`,
   contents: {
     type: 'bubble',
     header: {
@@ -144,7 +89,7 @@ module.exports = (type, city, details) => ({
       backgroundColor: color.blue,
       contents: [{
         type: 'text',
-        text: type === 'store' ? `${city}板店` : city,
+        text: `${city}板店`,
         weight: 'bold',
         size: 'xl',
         color: color.white,
@@ -154,7 +99,7 @@ module.exports = (type, city, details) => ({
       type: 'box',
       layout: 'vertical',
       contents: [
-        ..._.map(details, type === 'store' ? storeDetail : groundDetail),
+        ..._.map(_.get(storeCitys, city), detail),
       ],
     },
     footer: {
