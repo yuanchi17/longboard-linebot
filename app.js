@@ -39,7 +39,7 @@ const richmenuActionType = {
     image: 'https://i.imgur.com/iWD2F5o.png',
   },
 }
-
+console.log('config', config)
 const client = new line.Client(config)
 
 const handleEvent = async event => {
