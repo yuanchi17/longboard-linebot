@@ -64,7 +64,7 @@ const detail = store => ({
         },
         {
           type: 'text',
-          text: _.replace(store.group_activity, /;/g, '\n') === '' ? '我不曉得他們的團練時間' : _.replace(store.group_activity, ';', '\n'),
+          text: _.replace(store.group_activity, /;/g, '\n') === '' ? '我不曉得他們的團練時間' : _.replace(store.group_activity, /;/g, '\n'),
           size: 'sm',
           flex: 5,
           wrap: true,
@@ -78,7 +78,7 @@ const detail = store => ({
   ],
 })
 
-module.exports = (city, storeCitys) => ({
+module.exports = ({ city, stores }) => ({
   type: 'flex',
   altText: `我知道${city}有這些板店！提供給你參考參考～`,
   contents: {
@@ -99,7 +99,7 @@ module.exports = (city, storeCitys) => ({
       type: 'box',
       layout: 'vertical',
       contents: [
-        ..._.map(_.get(storeCitys, city), detail),
+        ..._.map(stores, detail),
       ],
     },
     footer: {

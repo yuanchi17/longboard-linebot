@@ -64,9 +64,9 @@ module.exports = storeCitys => {
                 style: 'link',
                 type: 'button',
                 action: {
+                  data: JSON.stringify(['storesDetail', city]),
                   label: city,
-                  text: city,
-                  type: 'message',
+                  type: 'postback',
                 },
               })),
             ],

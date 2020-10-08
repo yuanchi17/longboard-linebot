@@ -56,7 +56,7 @@ const detail = ground => ({
   ],
 })
 
-module.exports = (city, groundCitys) => ({
+module.exports = ({ city, grounds }) => ({
   type: 'flex',
   altText: `想來${city}玩板嗎？這些場地給你參考參考～`,
   contents: {
@@ -77,7 +77,7 @@ module.exports = (city, groundCitys) => ({
       type: 'box',
       layout: 'vertical',
       contents: [
-        ..._.map(_.get(groundCitys, city), detail),
+        ..._.map(grounds, detail),
       ],
     },
     footer: {

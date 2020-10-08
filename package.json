@@ -26,6 +26,7 @@
     "express": "^4.17.1",
     "linebot": "^1.6.0",
     "lodash": "^4.17.20",
-    "papaparse": "^5.2.0"
+    "papaparse": "^5.2.0",
+    "path": "^0.12.7"
   }
 }

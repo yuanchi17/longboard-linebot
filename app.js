@@ -2,20 +2,12 @@ require('dotenv').config() // process.env
 
 // 選擇 Heroku 作為伺服器
 const express = require('express') // 伺服器端用的模組
-const line = require('@line/bot-sdk')
+const { client, middleware } = require('./libs/lineat')
 
-const _ = require('lodash')
-const { getenv } = require('./libs/helpers')
 const { getLongboardStores, getPlaygrounds, getTypeDetail } = require('./getData')
 const flexText = require('./views/flexText')
-const notFound = require('./views/notFound')
 
 const app = express() // 取得 express 實體
-const config = {
-  channelId: getenv('LINE_CHANNEL_ID'),
-  channelSecret: getenv('LINE_CHANNEL_SECRET'),
-  channelAccessToken: getenv('LINE_CHANNEL_ACCESSTOKEN'),
-}
 
 // 讀取資料
 const getStores = async () => {
@@ -27,39 +19,22 @@ const getStores = async () => {
 }
 getStores()
 
-const client = new line.Client(config)
-
 const handleEvent = async event => {
   console.log(event)
-  let msg
   const profile = await client.getProfile(event.source.userId)
   switch (event.type) {
-    case 'follow':
-      return client.replyMessage(event.replyToken, flexText(`Hi~${profile.displayName}！\n這是一個嘗試創建 chatbot 的小作品，主要目的為推廣長板運動\n\n試著點主選單的按鈕查詢看看吧！`))
-
     case 'message':
-      msg = event.message.text
-      if (event.message.type !== 'text') {
-        return client.replyMessage(event.replyToken, flexText('這我看某QQ'))
-      }
-
-      // 主選單的按鈕
-      if (msg === '種類介紹') return client.replyMessage(event.replyToken, require('./views/boardType')(app.locals.typeDetails))
-      if (msg === '滑板店家') return client.replyMessage(event.replyToken, require('./views/stores/list')(app.locals.storeCitys))
-      if (msg === '玩板場地') return client.replyMessage(event.replyToken, require('./views/grounds/list')(app.locals.groundCitys))
-      // 玩板場地
-      if (_.get(app.locals.storeCitys, msg) && /(.){2}玩板$/.test(msg)) return client.replyMessage(event.replyToken, require('./views/grounds/detail')(msg, app.locals.groundCitys))
-      // 長板店家
-      if (_.get(app.locals.groundCitys, msg)) client.replyMessage(event.replyToken, require('./views/stores/detail')(msg, app.locals.storeCitys))
-      // 沒有此查詢資料
-      return client.replyMessage(event.replyToken, notFound(msg))
-
+      // msg = event.message.text
+      if (event.message.type === 'text') return await require('./routes/messageText')({ event, app })
+      return client.replyMessage(event.replyToken, flexText(`${profile.displayName} 你說的我看某QQ，試試點選下方的主選單吧～`))
+    case 'postback':
+      return await require('./routes/postback')({ event, app })
     default:
       break
   }
 }
 
-app.post('/', line.middleware(config), (req, res) => {
+app.post('/', middleware, (req, res) => {
   Promise
     .all(req.body.events.map(handleEvent))
     .then((result) => { res.json(result) })

@@ -64,9 +64,9 @@ module.exports = groundCitys => {
                 style: 'link',
                 type: 'button',
                 action: {
+                  data: JSON.stringify(['groundsDetail', city]),
                   label: city,
-                  text: `${city}玩板`,
-                  type: 'message',
+                  type: 'postback',
                 },
               })),
             ],
