@@ -11,11 +11,15 @@ const app = express() // 取得 express 實體
 
 // 讀取資料
 const getStores = async () => {
-  await Promise.all([
-    getLongboardStores(app),
-    getPlaygrounds(app),
-    getTypeDetail(app),
-  ])
+  try {
+    await Promise.all([
+      getLongboardStores(app),
+      getPlaygrounds(app),
+      getTypeDetail(app),
+    ])
+  } catch (err) {
+    console.log('error: getStores', err)
+  }
 }
 getStores()
 
@@ -46,6 +50,8 @@ app.post('/', middleware, (req, res) => {
 app.listen(process.env.PORT || 3000, async () => {
   console.log('Express server start')
 })
+
+module.exports = app
 
 // 資料範例
 // longboardStores
