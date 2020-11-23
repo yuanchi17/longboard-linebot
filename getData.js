@@ -5,6 +5,7 @@ const Papa = require('papaparse')
 exports.getCsv = async url => {
   const csv = _.trim(_.get(await axios.get(url), 'data')) // _.trim：把前後多餘的空格修掉
   return _.get(Papa.parse(csv, {
+    encoding: 'utf8',
     header: true,
   }), 'data', [])
 }
