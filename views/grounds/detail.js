@@ -11,6 +11,7 @@ const detail = ground => ({
   },
   contents: [
     {
+      flex: 5,
       size: 'sm',
       text: ground.name,
       type: 'text',
@@ -20,6 +21,7 @@ const detail = ground => ({
       align: 'end',
       aspectMode: 'cover',
       aspectRatio: '1:1',
+      flex: 1,
       gravity: 'center',
       size: '20px',
       type: 'image',

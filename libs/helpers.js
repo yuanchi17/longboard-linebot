@@ -13,6 +13,7 @@ exports.toGoogleMap = location => {
   const query = {
     api: 1,
     query: `${location.lat},${location.lng}`,
+    openExternalBrowser: 1,
   }
   if (_.isEmpty(location.lat) || _.isEmpty(location.lng)) query.query = query.address
   return baseUrl + Qs.stringify(query)

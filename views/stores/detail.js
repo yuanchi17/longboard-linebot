@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const { color } = require('../../libs/helpers')
+const { color, toGoogleMap } = require('../../libs/helpers')
 
 const detail = store => ({
   type: 'box',
@@ -11,41 +11,28 @@ const detail = store => ({
       type: 'box',
       layout: 'baseline',
       spacing: 'sm',
+      action: {
+        label: 'action',
+        type: 'uri',
+        uri: toGoogleMap(store),
+      },
       contents: [
         {
-          color: color.gray,
-          flex: 1,
+          flex: 5,
           size: 'sm',
-          text: '店名',
-          type: 'text',
-          wrap: true,
-        },
-        {
-          type: 'text',
           text: store.name,
-          size: 'sm',
-          flex: 5,
+          type: 'text',
+          weight: 'bold',
         },
-      ],
-    },
-    {
-      type: 'box',
-      layout: 'baseline',
-      spacing: 'sm',
-      contents: [
         {
-          color: color.gray,
+          align: 'end',
+          aspectMode: 'cover',
+          aspectRatio: '1:1',
           flex: 1,
-          size: 'sm',
-          text: '地址',
-          type: 'text',
-          wrap: true,
-        },
-        {
-          type: 'text',
-          text: store.address === '' ? '我不知道確切位置' : store.address,
-          size: 'sm',
-          flex: 5,
+          gravity: 'center',
+          size: '20px',
+          type: 'image',
+          url: 'https://i.imgur.com/eKDkkkZ.png',
         },
       ],
     },
@@ -80,7 +67,7 @@ const detail = store => ({
 
 module.exports = ({ city, stores }) => ({
   type: 'flex',
-  altText: `我知道${city}有這些板店！提供給你參考參考～`,
+  altText: `我知道${city}有這些滑板店！提供給你參考參考～`,
   contents: {
     type: 'bubble',
     header: {
@@ -89,7 +76,7 @@ module.exports = ({ city, stores }) => ({
       backgroundColor: color.blue,
       contents: [{
         type: 'text',
-        text: `${city}板店`,
+        text: `${city}滑板店`,
         weight: 'bold',
         size: 'xl',
         color: color.white,
