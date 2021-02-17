@@ -1,57 +1,35 @@
 const _ = require('lodash')
-const { color } = require('../../libs/helpers')
+const { color, toGoogleMap } = require('../../libs/helpers')
 
 const detail = ground => ({
   type: 'box',
-  layout: 'vertical',
-  margin: 'lg',
-  spacing: 'sm',
+  layout: 'horizontal',
+  spacing: 'lg',
   contents: [
     {
-      type: 'box',
-      layout: 'baseline',
-      spacing: 'sm',
+      action: {
+        label: 'action',
+        type: 'uri',
+        uri: toGoogleMap(ground),
+      },
       contents: [
         {
           color: color.gray,
-          flex: 1,
           size: 'sm',
-          text: '場地',
-          type: 'text',
-          wrap: true,
-        },
-        {
-          type: 'text',
           text: ground.name,
-          size: 'sm',
-          flex: 5,
-        },
-      ],
-    },
-    {
-      type: 'box',
-      layout: 'baseline',
-      spacing: 'sm',
-      contents: [
-        {
-          color: color.gray,
-          flex: 1,
-          size: 'sm',
-          text: '位於',
           type: 'text',
           wrap: true,
         },
         {
-          type: 'text',
-          text: ground.address === '' ? '我也不知道在哪裡XD' : ground.address,
-          size: 'sm',
-          flex: 5,
+          align: 'end',
+          aspectMode: 'cover',
+          aspectRatio: '1:1',
+          gravity: 'center',
+          size: '20px',
+          type: 'image',
+          url: 'https://i.imgur.com/eKDkkkZ.png',
         },
       ],
-    },
-    {
-      type: 'separator',
-      margin: 'md',
     },
   ],
 })
