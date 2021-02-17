@@ -4,32 +4,26 @@ const { color, toGoogleMap } = require('../../libs/helpers')
 const detail = ground => ({
   type: 'box',
   layout: 'horizontal',
-  spacing: 'lg',
+  action: {
+    label: 'action',
+    type: 'uri',
+    uri: toGoogleMap(ground),
+  },
   contents: [
     {
-      action: {
-        label: 'action',
-        type: 'uri',
-        uri: toGoogleMap(ground),
-      },
-      contents: [
-        {
-          color: color.gray,
-          size: 'sm',
-          text: ground.name,
-          type: 'text',
-          wrap: true,
-        },
-        {
-          align: 'end',
-          aspectMode: 'cover',
-          aspectRatio: '1:1',
-          gravity: 'center',
-          size: '20px',
-          type: 'image',
-          url: 'https://i.imgur.com/eKDkkkZ.png',
-        },
-      ],
+      size: 'sm',
+      text: ground.name,
+      type: 'text',
+      wrap: true,
+    },
+    {
+      align: 'end',
+      aspectMode: 'cover',
+      aspectRatio: '1:1',
+      gravity: 'center',
+      size: '20px',
+      type: 'image',
+      url: 'https://i.imgur.com/eKDkkkZ.png',
     },
   ],
 })
@@ -54,6 +48,7 @@ module.exports = ({ city, grounds }) => ({
     body: {
       type: 'box',
       layout: 'vertical',
+      spacing: 'lg',
       contents: [
         ..._.map(grounds, detail),
       ],
