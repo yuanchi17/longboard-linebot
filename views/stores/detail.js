@@ -16,20 +16,20 @@ const detail = store => ({
         type: 'uri',
         uri: toGoogleMap(store),
       },
+      alignItems: 'flex-start',
       contents: [
         {
           flex: 5,
-          size: 'sm',
           text: store.name,
           type: 'text',
           weight: 'bold',
+          wrap: true,
         },
         {
           align: 'end',
           aspectMode: 'cover',
           aspectRatio: '1:1',
           flex: 1,
-          gravity: 'center',
           size: '20px',
           type: 'image',
           url: 'https://i.imgur.com/eKDkkkZ.png',
