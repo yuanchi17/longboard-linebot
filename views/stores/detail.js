@@ -85,6 +85,7 @@ module.exports = ({ city, stores }) => ({
     body: {
       type: 'box',
       layout: 'vertical',
+      paddingTop: '1px',
       contents: [
         ..._.map(stores, detail),
       ],
