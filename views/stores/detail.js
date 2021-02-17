@@ -9,7 +9,7 @@ const detail = store => ({
   contents: [
     {
       type: 'box',
-      layout: 'baseline',
+      layout: 'horizontal',
       spacing: 'sm',
       action: {
         label: 'action',

@@ -15,7 +15,7 @@ exports.toGoogleMap = location => {
     query: `${location.lat},${location.lng}`,
     openExternalBrowser: 1,
   }
-  if (_.isEmpty(location.lat) || _.isEmpty(location.lng)) query.query = query.address
+  if (_.isEmpty(location.lat) || _.isEmpty(location.lng)) query.query = location.address
   return baseUrl + Qs.stringify(query)
 }
 
