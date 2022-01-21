@@ -92,8 +92,8 @@ module.exports = groundCitys => {
             type: 'button',
             action: {
               type: 'uri',
-              label: '哈 讓我來告訴你吧',
-              uri: 'https://forms.gle/ZyBcucrQEUMB9RWf8?openExternalBrowser=1',
+              label: '哈 讓我來告訴你！',
+              uri: 'https://forms.gle/w127WDHjyghppCop6',
             },
           },
         ],

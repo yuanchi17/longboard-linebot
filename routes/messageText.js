@@ -5,9 +5,9 @@ const { client } = require('../libs/lineat')
  */
 const keyword = {}
 
-keyword['主選單-種類介紹'] = require('./postback/boardType')
+keyword['主選單-我想玩板'] = require('./postback/play')
 keyword['主選單-滑板店家'] = require('./postback/stores')
-keyword['主選單-玩板場地'] = require('./postback/grounds')
+keyword['主選單-種類介紹'] = require('./postback/boardType')
 
 module.exports = async ({ event, app }) => {
   const text = event.message.text

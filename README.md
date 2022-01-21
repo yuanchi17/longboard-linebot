@@ -1,5 +1,5 @@
-# yuan-chatbot
-簡易滑板介紹及查詢的 Chatbot
+# longboard-linebot
+以長板為主的滑板介紹、查詢功能的 LINE Bot
 
 * [正式站](https://line.me/R/ti/p/@117idlhz)
 
