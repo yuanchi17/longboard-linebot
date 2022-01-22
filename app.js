@@ -4,27 +4,59 @@ require('dotenv').config() // process.env
 const express = require('express') // 伺服器端用的模組
 const { client, middleware } = require('./libs/lineat')
 
-const { getLongboardStores, getPlaygrounds, getTypeDetail } = require('./getData')
+const _ = require('lodash')
+const getData = require('./getData')
 const flexText = require('./views/flexText')
 
 const app = express() // 取得 express 實體
+
+exports.errToPlainObj = (() => {
+  const ERROR_KEYS = [
+    'address',
+    'args',
+    'code',
+    'data',
+    'dest',
+    'errno',
+    'info',
+    'message',
+    'name',
+    'originalError.response.data',
+    'originalError.response.headers',
+    'originalError.response.status',
+    'path',
+    'port',
+    'reason',
+    'response.data',
+    'response.headers',
+    'response.status',
+    'stack',
+    'status',
+    'statusCode',
+    'statusMessage',
+    'syscall',
+  ]
+  return err => _.pick(err, ERROR_KEYS)
+})()
 
 // 讀取資料
 const getStores = async () => {
   try {
     await Promise.all([
-      getLongboardStores(app),
-      getPlaygrounds(app),
-      getTypeDetail(app),
+      getData.LongboardStores(app),
+      getData.Playgrounds(app),
+      getData.TypeDetail(app),
+      getData.PlayItems(app),
+      getData.PlayKeywords(app),
+      getData.PlayVideos(app),
     ])
   } catch (err) {
-    console.log('error: getStores', err)
+    console.log('error: getStores', exports.errToPlainObj(err))
   }
 }
 getStores()
 
 const handleEvent = async event => {
-  console.log(event)
   const profile = await client.getProfile(event.source.userId)
   switch (event.type) {
     case 'message':
@@ -43,7 +75,7 @@ app.post('/', middleware, (req, res) => {
     .all(req.body.events.map(handleEvent))
     .then((result) => { res.json(result) })
     .catch(err => {
-      console.log(err)
+      console.log(exports.errToPlainObj(err))
     })
 })
 
