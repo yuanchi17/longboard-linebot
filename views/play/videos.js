@@ -2,6 +2,7 @@ const _ = require('lodash')
 const { color } = require('../../libs/helpers')
 
 module.exports = ({ item, videos }) => {
+  item = { ...item, category: item.category.split('\n').join(' ') }
   const videosChunks = _.take(_.chunk(videos, 4), 11) // Flex carousel 最多 12 個
   const icon = {
     youtube: 'UokVIEJ',
