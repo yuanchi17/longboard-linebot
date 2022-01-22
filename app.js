@@ -5,7 +5,6 @@ const express = require('express') // 伺服器端用的模組
 const { client, middleware } = require('./libs/lineat')
 
 const _ = require('lodash')
-const getData = require('./getData')
 const flexText = require('./views/flexText')
 
 const app = express() // 取得 express 實體
@@ -38,23 +37,6 @@ exports.errToPlainObj = (() => {
   ]
   return err => _.pick(err, ERROR_KEYS)
 })()
-
-// 讀取資料
-const getStores = async () => {
-  try {
-    await Promise.all([
-      getData.LongboardStores(app),
-      getData.Playgrounds(app),
-      getData.TypeDetail(app),
-      getData.PlayItems(app),
-      getData.PlayKeywords(app),
-      getData.PlayVideos(app),
-    ])
-  } catch (err) {
-    console.log('error: getStores', exports.errToPlainObj(err))
-  }
-}
-getStores()
 
 const handleEvent = async event => {
   const profile = await client.getProfile(event.source.userId)

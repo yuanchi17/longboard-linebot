@@ -1,10 +1,11 @@
 const _ = require('lodash')
 const { client } = require('../../libs/lineat')
+const GetData = require('../../getData')
 
-module.exports = async ({ event, app, args }) => {
+module.exports = async ({ event, args }) => {
   const item = args[0]
   try {
-    const playVideos = app.locals.playVideos
+    const playVideos = await GetData.PlayVideos()
     const videos = _.compact(_.map(item.videos, vId => playVideos[vId]))
     if (!videos.length) throw new Error('沒有教學影片')
     return client.replyMessage(event.replyToken, require('../../views/play/videos')({ item, videos }))

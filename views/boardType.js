@@ -1,10 +1,10 @@
 const { color } = require('../libs/helpers')
 
-const detail = typeDetail => ({
+const detail = board => ({
   type: 'bubble',
   hero: {
     type: 'image',
-    url: typeDetail.image,
+    url: board.image,
     aspectRatio: '20:13',
     aspectMode: 'cover',
     size: 'full',
@@ -15,7 +15,7 @@ const detail = typeDetail => ({
     contents: [
       {
         type: 'text',
-        text: typeDetail.name,
+        text: board.name,
         weight: 'bold',
         size: 'xl',
       },
@@ -32,7 +32,7 @@ const detail = typeDetail => ({
             contents: [
               {
                 type: 'text',
-                text: `板身約 ${typeDetail.length} 吋`,
+                text: `板身約 ${board.length} 吋`,
                 wrap: true,
                 color: color.gray,
                 size: 'sm',
@@ -55,7 +55,7 @@ const detail = typeDetail => ({
               {
                 flex: 5,
                 size: 'sm',
-                text: typeDetail.feature,
+                text: board.feature,
                 type: 'text',
                 wrap: true,
               },
@@ -77,7 +77,7 @@ const detail = typeDetail => ({
               {
                 flex: 5,
                 size: 'sm',
-                text: typeDetail.play_type,
+                text: board.play_type,
                 type: 'text',
                 wrap: true,
               },
@@ -89,13 +89,13 @@ const detail = typeDetail => ({
   },
 })
 
-module.exports = typeDetails => ({
+module.exports = boards => ({
   type: 'flex',
   altText: '種類介紹',
   contents: {
     type: 'carousel',
     contents: [
-      ...typeDetails.map(detail),
+      ...boards.map(detail),
     ],
   },
 })
