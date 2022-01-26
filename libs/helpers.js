@@ -20,9 +20,9 @@ exports.toGoogleMap = location => {
   return baseUrl + Qs.stringify(query)
 }
 
-exports.searchPlayItemsByKeyword = async keyword => {
+exports.SearchPlayItemsByKeyword = async keyword => {
   const items = await GetData.PlayItems()
-  const search = _.trim(keyword)
+  const search = _.toLower(_.trim(keyword))
   if (!search) return []
 
   return _.orderBy(_.compact(_.map(items, item => {
@@ -31,8 +31,9 @@ exports.searchPlayItemsByKeyword = async keyword => {
     if (en === search || cn === search) return { ...item, priority: 100 } // priority: 權重
     if (en.split(' ').join('') === search) return { ...item, priority: 100 } // no comply = nocomply
     if (_.includes(item.keywords, search)) return { ...item, priority: 99 } // 相關的關鍵字
-    if (_.includes(en.split(' '), search)) return { ...item, priority: 98 - _.includes(en.split(' '), search) } // [ 'no', 'comply']
-    if (_.includes(cn.split(' '), search)) return { ...item, priority: 98 - _.includes(cn.split(' '), search) }
+    if (_.includes(en.split(' '), search)) return { ...item, priority: 98 - _.indexOf(en.split(' '), search) } // [ 'no', 'comply']
+    if (_.includes(cn.split(' '), search)) return { ...item, priority: 98 - _.indexOf(cn.split(' '), search) }
+    if (_.indexOf(cn, search) > -1) return { ...item, priority: 98 - _.indexOf(cn, search) }
   })), 'priority', 'desc')
 }
 

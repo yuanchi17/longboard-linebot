@@ -15,7 +15,7 @@ module.exports = async ({ event, app }) => {
   if (keyword[text]) return await keyword[text]({ event, app })
 
   const items = await SearchPlayItemsByKeyword(text)
-  if (items.length) return require('./postback/playItems')({ event, args: items, keyword: text })
+  if (items.length) return require('./postback/playListByKeyword')({ event, items, keyword: text })
   // 沒有此查詢資料
   await client.replyMessage(event.replyToken, require('../views/notFound')(text))
 }

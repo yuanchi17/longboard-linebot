@@ -1,37 +1,45 @@
 const _ = require('lodash')
 const { color } = require('../../libs/helpers')
 
-module.exports = ({ type, items }) => {
-  const itemChunks = _.chunk(items, 2)
-  const ctx = type === 'dancing' ? {
+const QUICK_ACTION = label => ({
+  type: 'action',
+  action: {
+    data: JSON.stringify(['playList', _.toLower(label)]),
+    type: 'postback',
+    label,
+  },
+})
+
+const CTX_TYPE = {
+  dancing: {
     altText: '快來看看有什麼好看的走板吧！',
     title: 'Dancing',
-    quickReply: {
-      type: 'action',
-      action: {
-        data: JSON.stringify(['playList', 'freestyle']),
-        type: 'postback',
-        label: 'Freestyle',
-      },
-    },
-  } : {
+    quickReply: [QUICK_ACTION('Freestyle')],
+  },
+  freestyle: {
     altText: '快來看看有什麼好玩的招吧！',
     title: 'Freestyle',
-    quickReply: {
-      type: 'action',
-      action: {
-        data: JSON.stringify(['playList', 'dancing']),
-        type: 'postback',
-        label: 'Dancing',
-      },
-    },
-  }
+    quickReply: [QUICK_ACTION('Dancing')],
+  },
+  keyword: {
+    altText: '幫你找到想關系列的招式了！',
+    title: '選一個看看吧',
+    quickReply: [
+      QUICK_ACTION('Dancing'),
+      QUICK_ACTION('Freestyle'),
+    ],
+  },
+}
+
+module.exports = ({ type, items, keyword }) => {
+  const itemChunks = _.chunk(items, 2)
+  const ctx = CTX_TYPE[type]
   return [
     {
       align: 'center',
       color: color.gray,
       size: 'sm',
-      text: '請點擊你想學的系列，查看相關的教學影片～',
+      text: type === 'keyword' ? `這些是跟「${keyword}」相關的招式，點擊看相關的教學影片～` : '請點擊你想學的系列，查看相關的教學影片～',
       type: 'text',
     },
     {
@@ -69,20 +77,12 @@ module.exports = ({ type, items }) => {
                   layout: 'vertical',
                   paddingAll: '10px',
                   type: 'box',
-                  contents: [
-                    ...(item.category_en ? {
-                      align: 'center',
-                      text: item.category_en,
-                      type: 'text',
-                      wrap: true,
-                    } : {}),
-                    ...(item.category_cn ? {
-                      align: 'center',
-                      text: item.category_cn,
-                      type: 'text',
-                      wrap: true,
-                    } : {}),
-                  ],
+                  contents: [{
+                    align: 'center',
+                    text: _.trim(`${item.category_en}\n${item.category_cn}`),
+                    type: 'text',
+                    wrap: true,
+                  }],
                   action: {
                     data: JSON.stringify(['playItems', item]),
                     type: 'postback',
@@ -110,9 +110,7 @@ module.exports = ({ type, items }) => {
         },
       },
       quickReply: {
-        items: [
-          ctx.quickReply,
-        ],
+        items: ctx.quickReply,
       },
     },
   ]

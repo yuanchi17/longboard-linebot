@@ -6,17 +6,12 @@ const ICON = {
   instagram: 'swdCwTM',
 }
 
-module.exports = ({ items, keyword }) => {
-  let altText = `這些是與 ${keyword} 相關的教學影片`
-  if (items.length === 1) altText = `這些是 ${items[0].category} 的教學影片`
-  return _.map(items, item => exports.itemCarousel({ item, altText }))
-}
-
-exports.itemCarousel = ({ item, altText }) => {
-  const videosChunks = _.take(_.chunk(item.videos, 4), 11) // Flex carousel 最多 12 個
+module.exports = ({ item, videos }) => {
+  item = { ...item, category: _.trim(`${item.category_en}\n${item.category_cn}`) }
+  const videosChunks = _.take(_.chunk(videos, 4), 11) // Flex carousel 最多 12 個
   return {
     type: 'flex',
-    altText,
+    altText: `這些是 ${item.category} 的教學影片`,
     contents: {
       type: 'carousel',
       contents: [
