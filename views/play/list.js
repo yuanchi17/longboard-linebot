@@ -39,7 +39,7 @@ module.exports = ({ type, items, keyword }) => {
       align: 'center',
       color: color.gray,
       size: 'sm',
-      text: type === 'keyword' ? `這些是跟「${keyword}」相關的招式，點擊看相關的教學影片～` : '請點擊你想學的系列，查看相關的教學影片～',
+      text: type === 'keyword' ? `這些是跟「${keyword}」有關的招式，點擊看看教學影片吧！` : '請點擊你想學的系列，查看相關的教學影片～',
       type: 'text',
     },
     {
