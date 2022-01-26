@@ -22,8 +22,8 @@ const CTX_TYPE = {
     quickReply: [QUICK_ACTION('Dancing')],
   },
   keyword: {
-    altText: '幫你找到想關系列的招式了！',
-    title: '選一個看看吧',
+    altText: '幫你找到相關系列的招式了！',
+    title: '相關系列',
     quickReply: [
       QUICK_ACTION('Dancing'),
       QUICK_ACTION('Freestyle'),
