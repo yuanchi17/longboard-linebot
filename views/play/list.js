@@ -69,14 +69,22 @@ module.exports = ({ type, items }) => {
                   layout: 'vertical',
                   paddingAll: '10px',
                   type: 'box',
-                  contents: [{
-                    align: 'center',
-                    text: item.category,
-                    type: 'text',
-                    wrap: true,
-                  }],
+                  contents: [
+                    ...(item.category_en ? {
+                      align: 'center',
+                      text: item.category_en,
+                      type: 'text',
+                      wrap: true,
+                    } : {}),
+                    ...(item.category_cn ? {
+                      align: 'center',
+                      text: item.category_cn,
+                      type: 'text',
+                      wrap: true,
+                    } : {}),
+                  ],
                   action: {
-                    data: JSON.stringify(['playItem', item]),
+                    data: JSON.stringify(['playItems', item]),
                     type: 'postback',
                   },
                 })),

@@ -1,16 +1,22 @@
 const _ = require('lodash')
 const { color } = require('../../libs/helpers')
 
-module.exports = ({ item, videos }) => {
-  item = { ...item, category: item.category.split('\n').join(' ') }
-  const videosChunks = _.take(_.chunk(videos, 4), 11) // Flex carousel 最多 12 個
-  const icon = {
-    youtube: 'UokVIEJ',
-    instagram: 'swdCwTM',
-  }
+const ICON = {
+  youtube: 'UokVIEJ',
+  instagram: 'swdCwTM',
+}
+
+module.exports = ({ items, keyword }) => {
+  let altText = `這些是與 ${keyword} 相關的教學影片`
+  if (items.length === 1) altText = `這些是 ${items[0].category} 的教學影片`
+  return _.map(items, item => exports.itemCarousel({ item, altText }))
+}
+
+exports.itemCarousel = ({ item, altText }) => {
+  const videosChunks = _.take(_.chunk(item.videos, 4), 11) // Flex carousel 最多 12 個
   return {
     type: 'flex',
-    altText: `這些是 ${item.category} 的教學影片`,
+    altText,
     contents: {
       type: 'carousel',
       contents: [
@@ -59,7 +65,7 @@ module.exports = ({ item, videos }) => {
                   gravity: 'center',
                   size: '20px',
                   type: 'image',
-                  url: `https://i.imgur.com/${icon[video.type]}.png`,
+                  url: `https://i.imgur.com/${ICON[video.type]}.png`,
                 },
               ],
             })),

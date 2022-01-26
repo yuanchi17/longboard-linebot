@@ -42,12 +42,11 @@ exports.PlayVideos = async () => {
 }
 
 exports.PlayItems = async () => {
-  return _.chain(await exports.getCsv(`${CSV_BASE_URL}${Qs.stringify({ gid: 922266960 }, { arrayFormat: 'brackets' })}`))
-    .map(item => ({
-      ...item,
-      id: _.toSafeInteger(item.id),
-      videos: _.map(item.videos.split(','), _.toSafeInteger),
-    }))
-    .groupBy('type')
-    .value()
+  const items = await exports.getCsv(`${CSV_BASE_URL}${Qs.stringify({ gid: 922266960 }, { arrayFormat: 'brackets' })}`)
+  return _.map(items, item => ({
+    ...item,
+    id: _.toSafeInteger(item.id),
+    keywords: _.map(item.keywords.split(','), _.toLower),
+    videos: _.map(item.videos.split(','), _.toSafeInteger),
+  }))
 }

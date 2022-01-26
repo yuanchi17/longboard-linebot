@@ -45,7 +45,7 @@ module.exports = ({ type, items }) => {
                 type: 'button',
                 adjustMode: 'shrink-to-fit', // TODO: 不要用這個，但文字大小要調整
                 action: {
-                  data: JSON.stringify(['playItem', item]),
+                  data: JSON.stringify(['playItems', item]),
                   label: item.name,
                   type: 'postback',
                 },

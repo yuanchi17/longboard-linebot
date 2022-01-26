@@ -1,4 +1,5 @@
 const { client } = require('../libs/lineat')
+const { SearchPlayItemsByKeyword } = require('../libs/helpers')
 
 /**
  * 關鍵字處理的函式，訊息必須完全相同才處理
@@ -12,6 +13,9 @@ keyword['主選單-種類介紹'] = require('./postback/boardType')
 module.exports = async ({ event, app }) => {
   const text = event.message.text
   if (keyword[text]) return await keyword[text]({ event, app })
+
+  const items = await SearchPlayItemsByKeyword(text)
+  if (items.length) return require('./postback/playItems')({ event, args: items, keyword: text })
   // 沒有此查詢資料
   await client.replyMessage(event.replyToken, require('../views/notFound')(text))
 }
