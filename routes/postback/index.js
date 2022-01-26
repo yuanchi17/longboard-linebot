@@ -4,7 +4,7 @@ const flexText = require('../../views/flexText')
 const fs = require('fs')
 const path = require('path')
 
-module.exports = async ({ event, app }) => {
+module.exports = async ({ event }) => {
   try {
     // 解析參數
     const [fn, ...args] = JSON.parse(_.get(event, 'postback.data', '[]'))
@@ -13,7 +13,7 @@ module.exports = async ({ event, app }) => {
     const fnPath = path.resolve(__dirname, `${fn}.js`)
     if (!fs.existsSync(fnPath)) throw new Error(`postback：${fn}.js 不存在`) // 確認檔案存在
     try {
-      await require(fnPath)({ event, app, args })
+      await require(fnPath)({ event, args })
     } catch (err) {
       err.message = `postback ${fn}: ${err.message}`
       throw err
