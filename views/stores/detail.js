@@ -1,66 +1,44 @@
 const _ = require('lodash')
 const { color, toGoogleMap } = require('../../libs/helpers')
 
-const detail = store => ({
-  type: 'box',
+const getBox = store => ({
+  flex: 5,
   layout: 'vertical',
-  margin: 'lg',
   spacing: 'sm',
+  type: 'box',
+  action: {
+    label: 'action',
+    type: 'uri',
+    uri: toGoogleMap(store),
+  },
   contents: [
     {
-      type: 'box',
+      text: store.name,
+      type: 'text',
+      weight: 'bold',
+      wrap: true,
+    },
+    {
       layout: 'horizontal',
-      spacing: 'sm',
-      action: {
-        label: 'action',
-        type: 'uri',
-        uri: toGoogleMap(store),
-      },
-      alignItems: 'flex-start',
+      type: 'box',
       contents: [
         {
-          flex: 5,
-          text: store.name,
-          type: 'text',
-          weight: 'bold',
-          wrap: true,
-        },
-        {
-          align: 'end',
+          align: 'start',
           aspectMode: 'cover',
           aspectRatio: '1:1',
           flex: 1,
-          size: '20px',
+          gravity: 'center',
+          size: '15px',
           type: 'image',
           url: 'https://i.imgur.com/eKDkkkZ.png',
         },
-      ],
-    },
-    {
-      type: 'box',
-      layout: 'baseline',
-      spacing: 'sm',
-      contents: [
         {
-          color: color.gray,
-          flex: 1,
-          size: 'sm',
-          text: '團練',
+          flex: 10,
+          size: 'xs',
+          text: store.address_label,
           type: 'text',
-          wrap: true,
-        },
-        {
-          type: 'text',
-          text: _.replace(store.group_activity, /;/g, '\n') === '' ? '我不曉得他們的團練時間' : _.replace(store.group_activity, /;/g, '\n'),
-          size: 'sm',
-          flex: 5,
-          wrap: true,
         },
       ],
-    },
-    {
-      type: 'separator',
-      margin: 'md',
     },
   ],
 })
@@ -83,25 +61,55 @@ module.exports = ({ city, stores }) => ({
       }],
     },
     body: {
-      type: 'box',
       layout: 'vertical',
-      paddingTop: '1px',
+      paddingAll: '0px',
+      paddingTop: '5px',
+      type: 'box',
       contents: [
-        ..._.map(stores, detail),
+        ..._.map(stores, store => ({
+          layout: 'vertical',
+          type: 'box',
+          contents: [
+            {
+              layout: 'horizontal',
+              paddingBottom: '10px',
+              paddingEnd: '15px',
+              paddingStart: '15px',
+              paddingTop: '10px',
+              type: 'box',
+              contents: [
+                getBox(store),
+                {
+                  action: {
+                    type: 'uri',
+                    uri: store.url,
+                  },
+                  aspectMode: 'cover',
+                  aspectRatio: '1:1',
+                  gravity: 'center',
+                  size: '30px',
+                  type: 'image',
+                  url: 'https://i.imgur.com/swdCwTM.png',
+                },
+              ],
+            },
+            {
+              margin: 'md',
+              type: 'separator',
+            },
+          ],
+        })),
       ],
     },
-    footer: {
-      type: 'box',
-      layout: 'vertical',
-      contents: [
-        {
-          type: 'text',
-          text: '以上資料僅供參考',
-          color: color.gray,
-          align: 'center',
-          size: 'sm',
-        },
-      ],
-    },
+  },
+  quickReply: {
+    items: [{
+      type: 'action',
+      action: {
+        uri: 'https://forms.gle/w127WDHjyghppCop6',
+        type: 'uri',
+        label: '我知道其他店家',
+      },
+    }],
   },
 })
