@@ -1,32 +1,26 @@
 const _ = require('lodash')
 const { color, toGoogleMap } = require('../../libs/helpers')
 
-const detail = ground => ({
+const getBox = ground => ({
+  flex: 5,
+  justifyContent: 'center',
+  layout: 'vertical',
+  spacing: 'sm',
   type: 'box',
-  layout: 'horizontal',
-  action: {
-    label: 'action',
-    type: 'uri',
-    uri: toGoogleMap(ground),
-  },
   contents: [
     {
-      flex: 5,
-      size: 'sm',
       text: ground.name,
       type: 'text',
+      weight: 'bold',
       wrap: true,
     },
-    {
-      align: 'end',
-      aspectMode: 'cover',
-      aspectRatio: '1:1',
-      flex: 1,
-      gravity: 'center',
-      size: '20px',
-      type: 'image',
-      url: 'https://i.imgur.com/eKDkkkZ.png',
-    },
+    ...(ground.ps ? [{
+      color: color.gray,
+      size: 'xs',
+      text: ground.ps,
+      type: 'text',
+      wrap: true,
+    }] : []),
   ],
 })
 
@@ -48,25 +42,56 @@ module.exports = ({ city, grounds }) => ({
       }],
     },
     body: {
-      type: 'box',
       layout: 'vertical',
-      spacing: 'lg',
+      paddingAll: '0px',
+      paddingTop: '5px',
+      type: 'box',
       contents: [
-        ..._.map(grounds, detail),
+        ..._.map(grounds, ground => ({
+          layout: 'vertical',
+          type: 'box',
+          contents: [
+            {
+              layout: 'horizontal',
+              paddingBottom: '10px',
+              paddingEnd: '15px',
+              paddingStart: '15px',
+              paddingTop: '10px',
+              type: 'box',
+              action: {
+                label: 'action',
+                type: 'uri',
+                uri: toGoogleMap(ground),
+              },
+              contents: [
+                getBox(ground),
+                {
+                  aspectMode: 'cover',
+                  aspectRatio: '1:1',
+                  gravity: 'center',
+                  size: '20px',
+                  type: 'image',
+                  url: 'https://i.imgur.com/eKDkkkZ.png',
+                },
+              ],
+            },
+            {
+              margin: 'md',
+              type: 'separator',
+            },
+          ],
+        })),
       ],
     },
-    footer: {
-      type: 'box',
-      layout: 'vertical',
-      contents: [
-        {
-          type: 'text',
-          text: '以上資料僅供參考',
-          color: color.gray,
-          align: 'center',
-          size: 'sm',
-        },
-      ],
-    },
+  },
+  quickReply: {
+    items: [{
+      type: 'action',
+      action: {
+        uri: 'https://forms.gle/w127WDHjyghppCop6',
+        type: 'uri',
+        label: '我知道其他地方',
+      },
+    }],
   },
 })
