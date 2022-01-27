@@ -2,7 +2,7 @@ const _ = require('lodash')
 const { color, toGoogleMap } = require('../../libs/helpers')
 
 const getBox = ground => ({
-  flex: 5,
+  flex: 7,
   justifyContent: 'center',
   layout: 'vertical',
   spacing: 'sm',
@@ -66,6 +66,7 @@ module.exports = ({ city, grounds }) => ({
               contents: [
                 getBox(ground),
                 {
+                  align: 'end',
                   aspectMode: 'cover',
                   aspectRatio: '1:1',
                   gravity: 'center',
@@ -76,7 +77,6 @@ module.exports = ({ city, grounds }) => ({
               ],
             },
             {
-              margin: 'md',
               type: 'separator',
             },
           ],
