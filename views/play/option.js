@@ -15,6 +15,14 @@ module.exports = () => ({
       {
         type: 'action',
         action: {
+          data: JSON.stringify(['playList', 'base']),
+          type: 'postback',
+          label: '基礎教學',
+        },
+      },
+      {
+        type: 'action',
+        action: {
           data: JSON.stringify(['playList', 'dancing']),
           type: 'postback',
           label: 'Dancing',

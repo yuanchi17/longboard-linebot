@@ -11,6 +11,14 @@ const QUICK_ACTION = label => ({
 })
 
 const CTX_TYPE = {
+  base: {
+    altText: '這些是滑板的基礎教學，剛接觸滑板的話要注意安全哦',
+    title: '基礎教學',
+    quickReply: [
+      QUICK_ACTION('Dancing'),
+      QUICK_ACTION('Freestyle'),
+    ],
+  },
   dancing: {
     altText: '快來看看有什麼好看的走板吧！',
     title: 'Dancing',

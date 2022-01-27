@@ -41,11 +41,15 @@ exports.PlayVideos = async () => {
   return _.keyBy(playVideos, 'id')
 }
 
-exports.PlayItems = async () => {
-  const items = await exports.getCsv(`${CSV_BASE_URL}${Qs.stringify({ gid: 922266960 }, { arrayFormat: 'brackets' })}`)
+exports.PlayItemsByType = async type => {
+  const gidMap = {
+    base: 2119495025,
+    dancing: 161237984,
+    freestyle: 1032490132,
+  }
+  const items = await exports.getCsv(`${CSV_BASE_URL}${Qs.stringify({ gid: gidMap[type] }, { arrayFormat: 'brackets' })}`)
   return _.map(items, item => ({
     ...item,
-    id: _.toSafeInteger(item.id),
     keywords: _.map(item.keywords.split(','), _.toLower),
     videos: _.map(item.videos.split(','), _.toSafeInteger),
   }))

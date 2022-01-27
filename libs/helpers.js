@@ -21,7 +21,11 @@ exports.toGoogleMap = location => {
 }
 
 exports.SearchPlayItemsByKeyword = async keyword => {
-  const items = await GetData.PlayItems()
+  const items = _.flatten(await Promise.all([
+    GetData.PlayItemsByType('base'),
+    GetData.PlayItemsByType('dancing'),
+    GetData.PlayItemsByType('freestyle'),
+  ]))
   const search = _.toLower(_.trim(keyword))
   if (!search) return []
 
