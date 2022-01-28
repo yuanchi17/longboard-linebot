@@ -6,7 +6,7 @@ module.exports = groundCitys => {
   const cityChunks = _.chunk(_.keys(groundCitys), 3)
   return {
     type: 'flex',
-    altText: '快來看看這些市區哪裡可以玩板吧！',
+    altText: '快來看看這些地區有哪裡可以玩板吧！',
     contents: {
       type: 'bubble',
       header: {
