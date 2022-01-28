@@ -1,9 +1,9 @@
 {
-  "name": "yuan-chatbot",
+  "name": "longboard-linebot",
   "version": "1.0.0",
   "main": "app.js",
-  "repository": "https://github.com/yuanchi17/yuan-chatbot.git",
-  "author": "李元琦 <yuan.chi@program.com.tw>",
+  "repository": "https://github.com/yuanchi17/longboard-linebot.git",
+  "author": "李元琦 <joyceleeya@gmail.com>",
   "license": "MIT",
   "scripts": {
     "dev": "node app.js",
