@@ -1,14 +1,17 @@
 const { color } = require('../libs/helpers')
+const quickReply = require('./quickReply')
 
 const detail = board => ({
   type: 'bubble',
-  hero: {
-    type: 'image',
-    url: board.image,
-    aspectRatio: '20:13',
-    aspectMode: 'cover',
-    size: 'full',
-  },
+  ...(board.image ? {
+    hero: {
+      type: 'image',
+      url: board.image,
+      aspectRatio: '20:13',
+      aspectMode: 'cover',
+      size: 'full',
+    },
+  } : {}),
   body: {
     type: 'box',
     layout: 'vertical',
@@ -97,5 +100,8 @@ module.exports = boards => ({
     contents: [
       ...boards.map(detail),
     ],
+  },
+  quickReply: {
+    items: quickReply.shareForm('我要補充介紹'),
   },
 })

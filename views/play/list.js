@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const { color } = require('../../libs/helpers')
+const quickReply = require('../quickReply')
 
 const QUICK_ACTION = label => ({
   type: 'action',
@@ -100,25 +101,12 @@ module.exports = ({ type, items, keyword }) => {
             })),
           ],
         },
-        footer: {
-          layout: 'vertical',
-          spacing: 'sm',
-          type: 'box',
-          contents: [{
-            color: color.blue,
-            height: 'sm',
-            style: 'primary',
-            type: 'button',
-            action: {
-              type: 'uri',
-              label: '我要提供其他系列！',
-              uri: 'https://forms.gle/w127WDHjyghppCop6',
-            },
-          }],
-        },
       },
       quickReply: {
-        items: ctx.quickReply,
+        items: [
+          ...ctx.quickReply,
+          ...quickReply.shareForm('我要提供其他系列'),
+        ],
       },
     },
   ]

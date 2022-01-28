@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const { color } = require('../../libs/helpers')
+const quickReply = require('../quickReply')
 
 const ICON = {
   youtube: 'UokVIEJ',
@@ -7,7 +7,7 @@ const ICON = {
 }
 
 module.exports = ({ item, videos }) => {
-  item = { ...item, category: _.trim(`${item.category_en}\n${item.category_cn}`) }
+  item = { ...item, category: _.trim(`${item.category_en} ${item.category_cn}`) }
   const videosChunks = _.take(_.chunk(videos, 4), 11) // Flex carousel 最多 12 個
   return {
     type: 'flex',
@@ -79,51 +79,10 @@ module.exports = ({ item, videos }) => {
             }],
           },
         }))),
-        { // 表單
-          type: 'bubble',
-          body: {
-            justifyContent: 'center',
-            layout: 'vertical',
-            paddingAll: '15px',
-            spacing: 'md',
-            type: 'box',
-            contents: [
-              {
-                text: '小邊將不定期更新哦！',
-                type: 'text',
-                wrap: true,
-                align: 'center',
-              },
-              {
-                color: color.blue,
-                height: 'sm',
-                style: 'primary',
-                type: 'button',
-                action: {
-                  label: '我要提供',
-                  type: 'uri',
-                  uri: 'https://forms.gle/w127WDHjyghppCop6',
-                },
-              },
-            ],
-          },
-          header: {
-            backgroundColor: '#98d6ea',
-            layout: 'vertical',
-            type: 'box',
-            contents: [
-              {
-                color: '#ffffff',
-                size: 'lg',
-                text: '歡迎提供更多教學影片～',
-                type: 'text',
-                weight: 'bold',
-                wrap: true,
-              },
-            ],
-          },
-        },
       ],
+    },
+    quickReply: {
+      items: quickReply.shareForm('我知道更多教學影片'),
     },
   }
 }

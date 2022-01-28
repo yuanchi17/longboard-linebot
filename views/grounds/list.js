@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const { color } = require('../../libs/helpers')
+const quickReply = require('../quickReply')
 
 module.exports = groundCitys => {
   const cityChunks = _.chunk(_.keys(groundCitys), 3)
@@ -52,7 +53,6 @@ module.exports = groundCitys => {
         layout: 'vertical',
         spacing: 'md',
         type: 'box',
-        paddingBottom: '0px',
         contents: [
           ..._.map(cityChunks, citys => ({
             layout: 'horizontal',
@@ -73,31 +73,9 @@ module.exports = groundCitys => {
           })),
         ],
       },
-      footer: {
-        layout: 'vertical',
-        spacing: 'sm',
-        type: 'box',
-        contents: [
-          {
-            align: 'center',
-            color: color.gray,
-            size: 'sm',
-            text: '什麼！你還知道更多地方？',
-            type: 'text',
-          },
-          {
-            color: color.blue,
-            height: 'sm',
-            style: 'primary',
-            type: 'button',
-            action: {
-              type: 'uri',
-              label: '哈 讓我來告訴你！',
-              uri: 'https://forms.gle/w127WDHjyghppCop6',
-            },
-          },
-        ],
-      },
+    },
+    quickReply: {
+      items: quickReply.shareForm('我要提供其他縣市'),
     },
   }
 }

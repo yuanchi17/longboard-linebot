@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const { color, toGoogleMap } = require('../../libs/helpers')
+const quickReply = require('../quickReply')
 
 const getBox = ground => ({
   flex: 7,
@@ -44,13 +45,16 @@ module.exports = ({ city, grounds }) => ({
     body: {
       layout: 'vertical',
       paddingAll: '0px',
-      paddingTop: '5px',
+      paddingBottom: '5px',
       type: 'box',
       contents: [
         ..._.map(grounds, ground => ({
           layout: 'vertical',
           type: 'box',
           contents: [
+            {
+              type: 'separator',
+            },
             {
               layout: 'horizontal',
               paddingBottom: '10px',
@@ -76,22 +80,12 @@ module.exports = ({ city, grounds }) => ({
                 },
               ],
             },
-            {
-              type: 'separator',
-            },
           ],
         })),
       ],
     },
   },
   quickReply: {
-    items: [{
-      type: 'action',
-      action: {
-        uri: 'https://forms.gle/w127WDHjyghppCop6',
-        type: 'uri',
-        label: '我知道其他地方',
-      },
-    }],
+    items: quickReply.shareForm('我知道其他地方'),
   },
 })
