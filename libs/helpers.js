@@ -34,10 +34,10 @@ exports.SearchPlayItemsByKeyword = async keyword => {
     const cn = _.get(item, 'category_cn', '')
     if (en === search || cn === search) return { ...item, priority: 100 } // priority: 權重
     if (en.split(' ').join('') === search) return { ...item, priority: 100 } // no comply = nocomply
-    if (_.includes(item.keywords, search)) return { ...item, priority: 99 } // 相關的關鍵字
-    if (_.includes(en.split(' '), search)) return { ...item, priority: 98 - _.indexOf(en.split(' '), search) } // [ 'no', 'comply']
-    if (_.includes(cn.split(' '), search)) return { ...item, priority: 98 - _.indexOf(cn.split(' '), search) }
-    if (_.indexOf(cn, search) > -1) return { ...item, priority: 98 - _.indexOf(cn, search) }
+    if (_.includes(en.split(' '), search)) return { ...item, priority: 99 - _.indexOf(en.split(' '), search) } // [ 'no', 'comply']
+    if (_.includes(cn.split(' '), search)) return { ...item, priority: 99 - _.indexOf(cn.split(' '), search) }
+    if (_.includes(item.keywords, search)) return { ...item, priority: 2 } // 相關的關鍵字
+    if (_.indexOf(cn, search) > -1) return { ...item, priority: 1 }
   })), 'priority', 'desc')
 }
 
