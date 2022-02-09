@@ -3,15 +3,47 @@ const quickReply = require('./quickReply')
 
 const detail = board => ({
   type: 'bubble',
-  ...(board.image ? {
-    hero: {
-      type: 'image',
-      url: board.image,
-      aspectRatio: '20:13',
-      aspectMode: 'cover',
-      size: 'full',
-    },
-  } : {}),
+  hero: (board.image ? {
+    layout: 'vertical',
+    type: 'box',
+    contents: [
+      {
+        aspectMode: 'cover',
+        aspectRatio: '20:13',
+        size: 'full',
+        type: 'image',
+        url: board.image,
+      },
+      { // 底色
+        backgroundColor: '#ffffff90',
+        height: '100%',
+        layout: 'vertical',
+        position: 'absolute',
+        type: 'box',
+        width: '100%',
+        contents: [
+          {
+            type: 'filler',
+          },
+        ],
+      },
+      {
+        aspectMode: 'fit',
+        aspectRatio: '20:13',
+        position: 'absolute',
+        size: 'full',
+        type: 'image',
+        url: board.image,
+      },
+    ],
+  } : {
+    aspectMode: 'fit',
+    aspectRatio: '20:13',
+    backgroundColor: '#98d6ea',
+    size: 'full',
+    type: 'image',
+    url: 'https://i.imgur.com/N5MPTcY.png',
+  }),
   body: {
     type: 'box',
     layout: 'vertical',
