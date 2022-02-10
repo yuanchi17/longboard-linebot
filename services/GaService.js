@@ -29,3 +29,14 @@ exports.gaScreenView = async (lineId, name) => {
     cd: name,
   }))
 }
+
+exports.gaEventLabel = (lineId, category, action, label) => {
+  return axios.post('https://www.google-analytics.com/collect', httpBuildQuery({
+    ...PAYLOAD_DEFAULT,
+    ...transformLineId(lineId),
+    t: 'event',
+    ec: category,
+    ea: action,
+    el: label,
+  }))
+}
