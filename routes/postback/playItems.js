@@ -3,13 +3,18 @@ const { client } = require('../../libs/lineat')
 const GetData = require('../../getData')
 
 module.exports = async ({ event, args }) => {
-  const item = args[0]
+  let item = args[0]
+  item = { ...item, category: _.trim(`${item.category_en} ${item.category_cn}`) }
   try {
     const playVideos = await GetData.PlayVideos()
     const videos = _.orderBy(_.compact(_.map(item.videos, vId => playVideos[vId])), 'level', 'asc')
-    if (!videos.length) throw new Error('沒有教學影片')
+    if (!videos.length) throw new Error('查無結果')
+    event.gaScreenView('教學影片清單')
+    event.gaEventLabel('教學影片清單', '招式', item.category)
     return client.replyMessage(event.replyToken, require('../../views/play/videos')({ item, videos }))
   } catch (err) {
+    event.gaScreenView('教學影片清單')
+    event.gaEventLabel('教學影片清單', err.message, item.category)
     return client.replyMessage(event.replyToken, require('../../views/play/videosEmpty')(item))
   }
 }

@@ -6,6 +6,7 @@ const { client, middleware } = require('./libs/lineat')
 
 const _ = require('lodash')
 const flexText = require('./views/flexText')
+const GaService = require('./services/GaService')
 
 const app = express() // 取得 express 實體
 
@@ -39,14 +40,28 @@ exports.errToPlainObj = (() => {
 })()
 
 const handleEvent = async event => {
-  const profile = await client.getProfile(event.source.userId)
+  const lineId = _.get(event, 'source.userId')
+  if (!lineId) return
+  let profile
+  try { // 封鎖好友會抓不到
+    profile = await client.getProfile(event.source.userId)
+  } catch (err) {
+    console.log(`無法從 LINE 取得使用者資料, lineId = ${lineId}`)
+  }
+  GaService.gaTargetByLineId(lineId, event)
   switch (event.type) {
     case 'message':
       // msg = event.message.text
       if (event.message.type === 'text') return await require('./routes/messageText')({ event, app })
-      return client.replyMessage(event.replyToken, flexText(`${profile.displayName} 你說的我看某QQ，試試點選下方的主選單吧～`))
+      return client.replyMessage(event.replyToken, flexText(`${profile.displayName} 抱歉…我不太懂你說的，請點選下方的主選單進行查詢～`))
     case 'postback':
       return await require('./routes/postback')({ event, app })
+    case 'follow':
+      event.gaScreenView('加入好友')
+      break
+    case 'unfollow':
+      event.gaScreenView('封鎖好友')
+      break
     default:
       break
   }

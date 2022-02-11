@@ -7,7 +7,6 @@ const ICON = {
 }
 
 module.exports = ({ item, videos }) => {
-  item = { ...item, category: _.trim(`${item.category_en} ${item.category_cn}`) }
   const videosChunks = _.take(_.chunk(videos, 4), 11) // Flex carousel 最多 12 個
   return {
     type: 'flex',

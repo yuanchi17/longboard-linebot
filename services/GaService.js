@@ -9,7 +9,7 @@ const PAYLOAD_DEFAULT = {
   de: 'UTF-8', // 字元編碼
   ds: 'app', // 資料來源，填寫為 app
   tid: getenv('GA_TID', 'UA-164526128-3'), // GA 追蹤代碼
-  ua: 'Longboard App LINE OA', // https://stackoverflow.com/questions/27357954/google-analytics-measurement-protocol-not-working/56354451#56354451
+  ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36', // https://stackoverflow.com/questions/27357954/google-analytics-measurement-protocol-not-working/56354451#56354451
   ul: 'zh-tw', // locale
   v: 1, // api version
 }
@@ -21,22 +21,27 @@ const transformLineId = lineId => ({
   cid: lineId.replace(/^U(\w{8})(\w{4})(\w{4})(\w{4})(\w{12})$/, '$1-$2-$3-$4-$5'),
 })
 
-exports.gaScreenView = async (lineId, name) => {
-  return axios.post('https://www.google-analytics.com/collect', httpBuildQuery({
-    ...PAYLOAD_DEFAULT,
-    ...transformLineId(lineId),
-    t: 'screenview',
-    cd: name,
-  }))
-}
+exports.gaTargetByLineId = (lineId, target = {}, defaults = {}) => {
+  if (target.gaScreenView) return target // 避免重複宣告
 
-exports.gaEventLabel = (lineId, category, action, label) => {
-  return axios.post('https://www.google-analytics.com/collect', httpBuildQuery({
-    ...PAYLOAD_DEFAULT,
-    ...transformLineId(lineId),
-    t: 'event',
-    ec: category,
-    ea: action,
-    el: label,
-  }))
+  defaults = transformLineId(lineId)
+  target.gaScreenView = async name => {
+    return axios.post('https://www.google-analytics.com/collect', httpBuildQuery({
+      ...defaults,
+      ...PAYLOAD_DEFAULT,
+      cd: name,
+      t: 'screenview',
+    }))
+  }
+
+  target.gaEventLabel = (category, action, label) => {
+    return axios.post('https://www.google-analytics.com/collect', httpBuildQuery({
+      ...defaults,
+      ...PAYLOAD_DEFAULT,
+      ea: action,
+      ec: category,
+      el: label,
+      t: 'event',
+    }))
+  }
 }
