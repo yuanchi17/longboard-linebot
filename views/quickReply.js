@@ -1,7 +1,7 @@
 exports.shareForm = label => ([{
   type: 'action',
   action: {
-    uri: 'https://forms.gle/w127WDHjyghppCop6',
+    uri: 'https://lihi1.cc/q7zVh',
     type: 'uri',
     label,
   },

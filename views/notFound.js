@@ -26,7 +26,7 @@ module.exports = msg => ({
         action: {
           type: 'uri',
           label: '讓我來告訴你',
-          uri: 'https://forms.gle/w127WDHjyghppCop6',
+          uri: 'https://lihi1.cc/q7zVh',
         },
       }],
     },
