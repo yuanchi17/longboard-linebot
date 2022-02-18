@@ -4,6 +4,7 @@ const quickReply = require('../quickReply')
 const ICON = {
   youtube: 'UokVIEJ',
   instagram: 'swdCwTM',
+  other: 'BpSFOti',
 }
 
 module.exports = ({ item, videos }) => {
