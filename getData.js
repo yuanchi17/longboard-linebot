@@ -1,9 +1,7 @@
 const _ = require('lodash')
+const { getenv } = require('./libs/helpers')
 const axios = require('axios')
 const Papa = require('papaparse')
-const Qs = require('qs')
-
-const CSV_BASE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT5F5J1G5fZevlcbtjBIiw5U0JgInlV-OBPMzvIkGimzXaizHIaNbw_LfpuR7nW1-7kyDVHKYIV0hOd/pub?single=true&output=csv&'
 
 exports.getCsv = async (url, cachetime = 3e4) => {
   const csv = _.trim(_.get(await axios.get(url, { // _.trim：把前後多餘的空格、BOM 修掉
@@ -16,25 +14,21 @@ exports.getCsv = async (url, cachetime = 3e4) => {
 }
 
 exports.LongboardStores = async () => {
-  const longboardStores = await exports.getCsv(`${CSV_BASE_URL}${Qs.stringify({ gid: 0 }, { arrayFormat: 'brackets' })}`)
+  const longboardStores = await exports.getCsv(getenv('LONGBOARD_STORES_CSV'))
   return _.groupBy(longboardStores, 'city')
 }
 
 exports.PlayGrounds = async () => {
-  const playgrounds = await exports.getCsv(`${CSV_BASE_URL}${Qs.stringify({ gid: 2013906441 }, { arrayFormat: 'brackets' })}`)
+  const playgrounds = await exports.getCsv(getenv('PLAY_GROUNDS_CSV'))
   return _.groupBy(playgrounds, 'city')
 }
 
 exports.BoardTypeIntro = async () => {
-  return await exports.getCsv(`${CSV_BASE_URL}${Qs.stringify({ gid: 1813045536 }, { arrayFormat: 'brackets' })}`)
-}
-
-exports.PlayKeywords = async () => {
-  return await exports.getCsv(`${CSV_BASE_URL}${Qs.stringify({ gid: 88331301 }, { arrayFormat: 'brackets' })}`)
+  return await exports.getCsv(getenv('BOARD_TYPE_INTRO_CSV'))
 }
 
 exports.PlayVideos = async () => {
-  const playVideos = _.map(await exports.getCsv(`${CSV_BASE_URL}${Qs.stringify({ gid: 1554311729 }, { arrayFormat: 'brackets' })}`), video => ({
+  const playVideos = _.map(await exports.getCsv(getenv('PLAY_VIDEOS_CSV')), video => ({
     ...video,
     id: _.toSafeInteger(video.id),
   }))
@@ -43,11 +37,11 @@ exports.PlayVideos = async () => {
 
 exports.PlayItemsByType = async type => {
   const gidMap = {
-    base: 2119495025,
-    dancing: 161237984,
-    freestyle: 1032490132,
+    base: getenv('PLAY_ITEMS_BASE_CSV'),
+    dancing: getenv('PLAY_ITEMS_DANCING_CSV'),
+    freestyle: getenv('PLAY_ITEMS_FREESTYLE_CSV'),
   }
-  const items = await exports.getCsv(`${CSV_BASE_URL}${Qs.stringify({ gid: gidMap[type] }, { arrayFormat: 'brackets' })}`)
+  const items = await exports.getCsv(gidMap[type])
   return _.map(items, item => ({
     ...item,
     keywords: _.map(item.keywords.split(','), _.toLower),
