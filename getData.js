@@ -1,6 +1,6 @@
 const _ = require('lodash')
-const { getenv } = require('./libs/helpers')
 const axios = require('axios')
+const Helpers = require('./libs/helpers')
 const Papa = require('papaparse')
 
 exports.getCsv = async (url, cachetime = 3e4) => {
@@ -14,21 +14,21 @@ exports.getCsv = async (url, cachetime = 3e4) => {
 }
 
 exports.LongboardStores = async () => {
-  const longboardStores = await exports.getCsv(getenv('LONGBOARD_STORES_CSV'))
+  const longboardStores = await exports.getCsv(Helpers.getenv('LONGBOARD_STORES_CSV'))
   return _.groupBy(longboardStores, 'city')
 }
 
 exports.PlayGrounds = async () => {
-  const playgrounds = await exports.getCsv(getenv('PLAY_GROUNDS_CSV'))
+  const playgrounds = await exports.getCsv(Helpers.getenv('PLAY_GROUNDS_CSV'))
   return _.groupBy(playgrounds, 'city')
 }
 
 exports.BoardTypeIntro = async () => {
-  return await exports.getCsv(getenv('BOARD_TYPE_INTRO_CSV'))
+  return await exports.getCsv(Helpers.getenv('BOARD_TYPE_INTRO_CSV'))
 }
 
 exports.PlayVideos = async () => {
-  const playVideos = _.map(await exports.getCsv(getenv('PLAY_VIDEOS_CSV')), video => ({
+  const playVideos = _.map(await exports.getCsv(Helpers.getenv('PLAY_VIDEOS_CSV')), video => ({
     ...video,
     id: _.toSafeInteger(video.id),
   }))
@@ -37,9 +37,9 @@ exports.PlayVideos = async () => {
 
 exports.PlayItemsByType = async type => {
   const gidMap = {
-    base: getenv('PLAY_ITEMS_BASE_CSV'),
-    dancing: getenv('PLAY_ITEMS_DANCING_CSV'),
-    freestyle: getenv('PLAY_ITEMS_FREESTYLE_CSV'),
+    base: Helpers.getenv('PLAY_ITEMS_BASE_CSV'),
+    dancing: Helpers.getenv('PLAY_ITEMS_DANCING_CSV'),
+    freestyle: Helpers.getenv('PLAY_ITEMS_FREESTYLE_CSV'),
   }
   const items = await exports.getCsv(gidMap[type])
   return _.map(items, item => ({
