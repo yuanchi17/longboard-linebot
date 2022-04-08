@@ -25,7 +25,12 @@ module.exports = async ({ event, app }) => {
 
   // 關鍵字查縣市資訊
   const cityItems = await SearchGroundsAndStoresByKeyword(text)
-  if (cityItems?.grounds || cityItems?.stores) return require('./postback/groundsAndStoresByKeyword')({ event, items: cityItems, keyword: text })
+  if (cityItems?.grounds || cityItems?.stores) {
+    return require('./postback/groundsAndStoresByKeyword')({
+      ctx: cityItems,
+      event,
+    })
+  }
 
   // 沒有此查詢資料
   event.gaScreenView('未知訊息')

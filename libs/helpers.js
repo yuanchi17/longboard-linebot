@@ -51,6 +51,7 @@ exports.SearchGroundsAndStoresByKeyword = async keyword => {
   if (!city) return {}
 
   return {
+    city,
     grounds: _.get(grounds, city, []),
     stores: _.get(stores, city, []),
   }
