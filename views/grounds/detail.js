@@ -83,7 +83,7 @@ exports.bubble = ({ city, grounds }) => ({
   },
 })
 
-module.exports = ({ city, grounds }) => ({
+exports.main = ({ city, grounds }) => ({
   type: 'flex',
   altText: `想來${city}玩板嗎？這些場地給你參考參考～`,
   contents: exports.bubble({ city, grounds }),
