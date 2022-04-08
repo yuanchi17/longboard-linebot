@@ -41,6 +41,21 @@ exports.SearchPlayItemsByKeyword = async keyword => {
   })), 'priority', 'desc')
 }
 
+exports.SearchGroundsAndStoresByKeyword = async keyword => {
+  const [stores, grounds] = _.flatten(await Promise.all([
+    GetData.LongboardStores(),
+    GetData.PlayGrounds(),
+  ]))
+
+  const city = _.trim(keyword.replace('臺', '台'))
+  if (!city) return {}
+
+  return {
+    grounds: _.get(grounds, city, []),
+    stores: _.get(stores, city, []),
+  }
+}
+
 exports.color = {
   blue: '#98d6ea',
   gray: '#aaaaaa',

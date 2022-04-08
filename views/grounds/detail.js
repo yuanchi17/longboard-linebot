@@ -25,66 +25,68 @@ const getBox = ground => ({
   ],
 })
 
+exports.bubble = ({ city, grounds }) => ({
+  type: 'bubble',
+  header: {
+    type: 'box',
+    layout: 'vertical',
+    backgroundColor: color.blue,
+    contents: [{
+      type: 'text',
+      text: `${city}玩板`,
+      weight: 'bold',
+      size: 'xl',
+      color: color.white,
+    }],
+  },
+  body: {
+    layout: 'vertical',
+    paddingAll: '0px',
+    paddingBottom: '5px',
+    type: 'box',
+    contents: [
+      ..._.map(grounds, ground => ({
+        layout: 'vertical',
+        type: 'box',
+        contents: [
+          {
+            type: 'separator',
+          },
+          {
+            layout: 'horizontal',
+            paddingBottom: '10px',
+            paddingEnd: '15px',
+            paddingStart: '15px',
+            paddingTop: '10px',
+            type: 'box',
+            action: {
+              label: 'action',
+              type: 'uri',
+              uri: toGoogleMap(ground),
+            },
+            contents: [
+              getBox(ground),
+              {
+                align: 'end',
+                aspectMode: 'cover',
+                aspectRatio: '1:1',
+                gravity: 'center',
+                size: '20px',
+                type: 'image',
+                url: 'https://i.imgur.com/eKDkkkZ.png',
+              },
+            ],
+          },
+        ],
+      })),
+    ],
+  },
+})
+
 module.exports = ({ city, grounds }) => ({
   type: 'flex',
   altText: `想來${city}玩板嗎？這些場地給你參考參考～`,
-  contents: {
-    type: 'bubble',
-    header: {
-      type: 'box',
-      layout: 'vertical',
-      backgroundColor: color.blue,
-      contents: [{
-        type: 'text',
-        text: `${city}玩板`,
-        weight: 'bold',
-        size: 'xl',
-        color: color.white,
-      }],
-    },
-    body: {
-      layout: 'vertical',
-      paddingAll: '0px',
-      paddingBottom: '5px',
-      type: 'box',
-      contents: [
-        ..._.map(grounds, ground => ({
-          layout: 'vertical',
-          type: 'box',
-          contents: [
-            {
-              type: 'separator',
-            },
-            {
-              layout: 'horizontal',
-              paddingBottom: '10px',
-              paddingEnd: '15px',
-              paddingStart: '15px',
-              paddingTop: '10px',
-              type: 'box',
-              action: {
-                label: 'action',
-                type: 'uri',
-                uri: toGoogleMap(ground),
-              },
-              contents: [
-                getBox(ground),
-                {
-                  align: 'end',
-                  aspectMode: 'cover',
-                  aspectRatio: '1:1',
-                  gravity: 'center',
-                  size: '20px',
-                  type: 'image',
-                  url: 'https://i.imgur.com/eKDkkkZ.png',
-                },
-              ],
-            },
-          ],
-        })),
-      ],
-    },
-  },
+  contents: exports.bubble({ city, grounds }),
   quickReply: {
     items: quickReply.shareForm('我知道其他地方'),
   },

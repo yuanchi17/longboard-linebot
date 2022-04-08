@@ -44,64 +44,66 @@ const getBox = store => ({
   ],
 })
 
+exports.bubble = ({ city, stores }) => ({
+  type: 'bubble',
+  header: {
+    type: 'box',
+    layout: 'vertical',
+    backgroundColor: color.blue,
+    contents: [{
+      type: 'text',
+      text: `${city}滑板店`,
+      weight: 'bold',
+      size: 'xl',
+      color: color.white,
+    }],
+  },
+  body: {
+    layout: 'vertical',
+    paddingAll: '0px',
+    paddingBottom: '5px',
+    type: 'box',
+    contents: [
+      ..._.map(stores, store => ({
+        layout: 'vertical',
+        type: 'box',
+        contents: [
+          {
+            type: 'separator',
+          },
+          {
+            layout: 'horizontal',
+            paddingBottom: '10px',
+            paddingEnd: '15px',
+            paddingStart: '15px',
+            paddingTop: '10px',
+            type: 'box',
+            contents: [
+              getBox(store),
+              {
+                action: {
+                  type: 'uri',
+                  uri: store.url,
+                },
+                aspectMode: 'cover',
+                aspectRatio: '1:1',
+                gravity: 'center',
+                size: '30px',
+                type: 'image',
+                url: 'https://i.imgur.com/swdCwTM.png',
+              },
+            ],
+          },
+        ],
+      })),
+    ],
+  },
+})
+
 module.exports = ({ city, stores }) => ({
   type: 'flex',
   altText: `我知道${city}有這些滑板店！提供給你參考參考～`,
-  contents: {
-    type: 'bubble',
-    header: {
-      type: 'box',
-      layout: 'vertical',
-      backgroundColor: color.blue,
-      contents: [{
-        type: 'text',
-        text: `${city}滑板店`,
-        weight: 'bold',
-        size: 'xl',
-        color: color.white,
-      }],
-    },
-    body: {
-      layout: 'vertical',
-      paddingAll: '0px',
-      paddingBottom: '5px',
-      type: 'box',
-      contents: [
-        ..._.map(stores, store => ({
-          layout: 'vertical',
-          type: 'box',
-          contents: [
-            {
-              type: 'separator',
-            },
-            {
-              layout: 'horizontal',
-              paddingBottom: '10px',
-              paddingEnd: '15px',
-              paddingStart: '15px',
-              paddingTop: '10px',
-              type: 'box',
-              contents: [
-                getBox(store),
-                {
-                  action: {
-                    type: 'uri',
-                    uri: store.url,
-                  },
-                  aspectMode: 'cover',
-                  aspectRatio: '1:1',
-                  gravity: 'center',
-                  size: '30px',
-                  type: 'image',
-                  url: 'https://i.imgur.com/swdCwTM.png',
-                },
-              ],
-            },
-          ],
-        })),
-      ],
-    },
-  },
+  contents: exports.bubble({ city, stores }),
   quickReply: {
     items: quickReply.shareForm('我知道其他店家'),
   },
