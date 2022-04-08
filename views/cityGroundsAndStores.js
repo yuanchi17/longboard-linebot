@@ -1,6 +1,6 @@
 
-const quickReply = require('../quickReply')
 const GroundsDetail = require('./grounds/detail')
+const quickReply = require('./quickReply')
 const StoresDetail = require('./stores/detail')
 
 module.exports = ({ items, city }) => ({
