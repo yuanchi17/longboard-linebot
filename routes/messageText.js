@@ -1,5 +1,5 @@
 const { client } = require('../libs/lineat')
-const { SearchPlayItemsByKeyword } = require('../libs/helpers')
+const { SearchPlayItemsByKeyword, SearchGroundsAndStoresByKeyword } = require('../libs/helpers')
 
 /**
  * 關鍵字處理的函式，訊息必須完全相同才處理
@@ -19,8 +19,19 @@ module.exports = async ({ event, app }) => {
     return await client.replyMessage(event.replyToken, require('../views/flexText')())
   }
 
+  // 關鍵字查招式
   const items = await SearchPlayItemsByKeyword(text)
   if (items.length) return require('./postback/playListByKeyword')({ event, items, keyword: text })
+
+  // 關鍵字查縣市資訊
+  const cityItems = await SearchGroundsAndStoresByKeyword(text)
+  if (cityItems?.grounds || cityItems?.stores) {
+    return require('./postback/groundsAndStoresByKeyword')({
+      ctx: cityItems,
+      event,
+    })
+  }
+
   // 沒有此查詢資料
   event.gaScreenView('未知訊息')
   event.gaEventLabel('未知訊息', '未知訊息', text)
