@@ -42,18 +42,20 @@ exports.SearchPlayItemsByKeyword = async keyword => {
 }
 
 exports.SearchGroundsAndStoresByKeyword = async keyword => {
-  const [stores, grounds] = _.flatten(await Promise.all([
+  let [stores, grounds] = _.flatten(await Promise.all([
     GetData.LongboardStores(),
     GetData.PlayGrounds(),
   ]))
 
   const city = _.trim(keyword.replace('臺', '台'))
-  if (!city) return {}
+  grounds = _.get(grounds, city, [])
+  stores = _.get(stores, city, [])
+  if (!grounds.length && !stores.length) return {}
 
   return {
     city,
-    grounds: _.get(grounds, city, []),
-    stores: _.get(stores, city, []),
+    grounds,
+    stores,
   }
 }
 
