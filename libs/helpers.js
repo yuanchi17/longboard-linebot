@@ -9,15 +9,50 @@ exports.getenv = (key, defaultval) => {
   return _.get(process, ['env', key], defaultval)
 }
 
+exports.httpBuildQuery = (obj) => Qs.stringify(obj, { arrayFormat: 'brackets' })
+
+exports.errToPlainObj = (() => {
+  const ERROR_KEYS = [
+    'address',
+    'args',
+    'code',
+    'data',
+    'dest',
+    'errno',
+    'info',
+    'message',
+    'name',
+    'originalError.response.data',
+    'originalError.response.headers',
+    'originalError.response.status',
+    'path',
+    'port',
+    'reason',
+    'response.data',
+    'response.headers',
+    'response.status',
+    'stack',
+    'status',
+    'statusCode',
+    'statusMessage',
+    'syscall',
+  ]
+  return err => _.pick(err, ERROR_KEYS)
+})()
+
 exports.toGoogleMap = location => {
-  const baseUrl = 'https://www.google.com/maps/search/?'
   const query = {
     api: 1,
     query: `${location.lat},${location.lng}`,
     openExternalBrowser: 1,
   }
   if (_.isEmpty(location.lat) || _.isEmpty(location.lng)) query.query = location.address
-  return baseUrl + Qs.stringify(query)
+  return `https://www.google.com/maps/search/?${Qs.stringify(query)}`
+}
+
+exports.toRedirectGaUrl = ({ u, cd, ec, ea, el }) => {
+  const LIFF = exports.getenv('LIFF_FULL', '1656599717-l3G7AM3d')
+  return `https://liff.line.me/${LIFF}/redirect-ga?${Qs.stringify({ u, cd, ec, ea, el })}`
 }
 
 exports.SearchPlayItemsByKeyword = async keyword => {

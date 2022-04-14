@@ -2,42 +2,23 @@ require('dotenv').config() // process.env
 
 // 選擇 Heroku 作為伺服器
 const express = require('express') // 伺服器端用的模組
+const path = require('path')
 const { client, middleware } = require('./libs/lineat')
 
 const _ = require('lodash')
+const { errToPlainObj, getenv } = require('./libs/helpers')
 const flexText = require('./views/flexText')
 const GaService = require('./services/GaService')
 
 const app = express() // 取得 express 實體
+app.locals.GA_TID = getenv('GA_TID', 'UA-164526128-3')
+app.locals.LIFF_FULL = getenv('LIFF_FULL', '1656599717-l3G7AM3d')
 
-exports.errToPlainObj = (() => {
-  const ERROR_KEYS = [
-    'address',
-    'args',
-    'code',
-    'data',
-    'dest',
-    'errno',
-    'info',
-    'message',
-    'name',
-    'originalError.response.data',
-    'originalError.response.headers',
-    'originalError.response.status',
-    'path',
-    'port',
-    'reason',
-    'response.data',
-    'response.headers',
-    'response.status',
-    'stack',
-    'status',
-    'statusCode',
-    'statusMessage',
-    'syscall',
-  ]
-  return err => _.pick(err, ERROR_KEYS)
-})()
+// 在 express 中使用範本引擎
+// https://expressjs.com/zh-tw/guide/using-template-engines.html
+const viewBaseDir = path.join(__dirname, 'views-liff') // Returns: '/.../views-liff'
+app.set('views', viewBaseDir)
+app.set('view engine', 'pug')
 
 const handleEvent = async event => {
   const lineId = _.get(event, 'source.userId')
@@ -51,7 +32,6 @@ const handleEvent = async event => {
   GaService.gaTargetByLineId(lineId, event)
   switch (event.type) {
     case 'message':
-      // msg = event.message.text
       if (event.message.type === 'text') return await require('./routes/messageText')({ event, app })
       return client.replyMessage(event.replyToken, flexText(`${profile.displayName} 抱歉…我不太懂你說的，請點選下方的主選單進行查詢～`))
     case 'postback':
@@ -72,9 +52,10 @@ app.post('/', middleware, (req, res) => {
     .all(req.body.events.map(handleEvent))
     .then((result) => { res.json(result) })
     .catch(err => {
-      console.log(exports.errToPlainObj(err))
+      console.log(errToPlainObj(err))
     })
 })
+app.use('/liff', require('./routes/liff'))
 
 app.listen(process.env.PORT || 3000, async () => {
   console.log('Express server start')

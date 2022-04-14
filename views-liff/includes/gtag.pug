@@ -1,0 +1,41 @@
+if GA_TID
+  script(async, src=`https://www.googletagmanager.com/gtag/js?id=${GA_TID}`)
+  script.
+    /* global GA_TID */
+    window.dataLayer = window.dataLayer || []
+    window.GA_TID = '#{GA_TID}'
+    console.log(window.GA_TID)
+    function gtag () { window.dataLayer.push(arguments) }
+    gtag('js', new Date())
+    window.gtagEventLabel = (category, action, label) => new Promise(resolve => {
+      gtag('event', action, {
+        event_callback: resolve,
+        event_category: category,
+        event_label: label,
+        send_to: 'liff',
+      })
+    })
+    window.gtagScreenView = screenName => new Promise(resolve => {
+      gtag('event', 'screen_view', {
+        event_callback: resolve,
+        screen_name: screenName,
+        send_to: 'liff',
+      })
+    })
+    window.gtagSetLineId = lineId => {
+      const liff = window.liff
+      const config = {
+        app_name: `LIFF ${liff.getOS()}`,
+        groups: 'liff',
+        send_page_view: false,
+        transport_type: 'beacon',
+        user_id: lineId,
+      }
+      if (liff.isInClient()) config.app_version = liff.getLineVersion()
+      gtag('config', GA_TID, config)
+    }
+else
+  script.
+    window.gtagEventLabel = () => {}
+    window.gtagScreenView = () => {}
+    window.gtagSetLineId = () => {}

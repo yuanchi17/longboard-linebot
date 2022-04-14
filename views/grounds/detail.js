@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const { color, toGoogleMap } = require('../../libs/helpers')
+const { color, toGoogleMap, toRedirectGaUrl } = require('../../libs/helpers')
 const quickReply = require('../quickReply')
 
 const getBox = ground => ({
@@ -62,7 +62,13 @@ exports.bubble = ({ city, grounds }) => ({
             action: {
               label: 'action',
               type: 'uri',
-              uri: toGoogleMap(ground),
+              uri: toRedirectGaUrl({
+                u: toGoogleMap(ground),
+                cd: '查看玩板場地位置',
+                ec: '查看玩板場地位置',
+                ea: city,
+                el: ground.name,
+              }),
             },
             contents: [
               getBox(ground),

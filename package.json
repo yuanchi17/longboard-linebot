@@ -26,10 +26,17 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "express": "^4.17.1",
+    "jstransformer-sass": "^1.0.0",
+    "jstransformer-scss": "taichunmin/jstransformer-scss.git",
     "linebot": "^1.6.0",
     "lodash": "^4.17.20",
+    "node-sass": "^7.0.1",
     "papaparse": "^5.3.0",
     "path": "^0.12.7",
+    "pug": "^3.0.2",
     "qs": "^6.9.6"
+  },
+  "resolutions": {
+    "**/jstransformer-scss": "taichunmin/jstransformer-scss.git"
   }
 }

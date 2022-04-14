@@ -1,0 +1,85 @@
+extends ./layout
+
+block beforehtml
+  - const title = '17 來玩板'
+
+block style
+  link(rel="stylesheet", href="https://unpkg.com/bootstrap@4/dist/css/bootstrap.min.css")
+  style
+    :sass
+      [v-cloak]
+        display: none
+      body
+        background-color: #98d6ea
+
+block content
+  .container#app(v-cloak)
+    //- TODO: 滑板動畫
+    .d-flex.flex-column.vh-100.align-items-center.justify-content-center
+      h3.text-center 稍後將自動跳轉
+      .px-3.my-3: button.btn.btn-lg.btn-block.btn-light(type="button", @click="btnClose") 關閉視窗
+
+block script
+  include ./includes/gtag.pug
+  script(crossorigin="anonymous", src="https://static.line-scdn.net/liff/edge/2/sdk.js")
+  script(crossorigin="anonymous", src="https://unpkg.com/js-base64@2/base64.min.js")
+  script(crossorigin="anonymous", src="https://unpkg.com/lodash@4/lodash.min.js")
+  script(crossorigin="anonymous", src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js")
+  script.
+    const loginPromise = (async () => {
+      await liff.init({ liffId: '#{LIFF_FULL}' })
+      if (!liff.isLoggedIn()) {
+        liff.login({ redirectUri: location.href })
+        return await new Promise(resolve => {}) // 永遠不會結束的 Promise
+      }
+      let profile = {}
+      try { profile = await liff.getProfile() } catch (err) { console.error(window.errToPlainObj(err)) }
+      if (!profile.userId) throw new Error('無法取得 userId')
+      if (window.gtagSetLineId) window.gtagSetLineId(profile.userId)
+      return profile
+    })()
+
+    const sleep = t => new Promise(resolve => { setTimeout(resolve, t) })
+
+    const vm = new Vue({ // eslint-disable-line
+      el: '#app',
+      async mounted () {
+        await loginPromise
+        const args = {
+          redirect: this.param('u', ''),
+          screenName: this.param('cd', ''),
+          category: this.param('ec', ''),
+          action: this.param('ea', ''),
+          label: this.param('el', ''),
+        }
+        console.log(args)
+        if (!args.redirect) return
+
+        // gtag
+        if (args.screenName) {
+          window.gtagScreenView(args.screenName)
+          if (args.category && args.action && args.label) {
+            window.gtagEventLabel(args.category, args.action, args.label)
+          }
+          await sleep(100)
+        }
+
+        liff.openWindow({
+          url: args.redirect,
+          external: true,
+        })
+
+        await sleep(1000)
+        await this.btnClose()
+      },
+      methods: {
+        async btnClose () {
+          liff.closeWindow()
+          return await new Promise(resolve => {}) // 永遠不會結束的 Promise
+        },
+        param (key, defaultValue) {
+          const val = new URL(location).searchParams.get(key)
+          return _.isNil(val) ? defaultValue : val
+        },
+      },
+    })

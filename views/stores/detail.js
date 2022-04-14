@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const { color, toGoogleMap } = require('../../libs/helpers')
+const { color, toGoogleMap, toRedirectGaUrl } = require('../../libs/helpers')
 const quickReply = require('../quickReply')
 
 const getBox = store => ({
@@ -10,7 +10,13 @@ const getBox = store => ({
   action: {
     label: 'action',
     type: 'uri',
-    uri: toGoogleMap(store),
+    uri: toRedirectGaUrl({
+      u: toGoogleMap(store),
+      cd: '查看店家位置',
+      ec: '查看店家位置',
+      ea: store.city,
+      el: store.name,
+    }),
   },
   contents: [
     {
@@ -83,7 +89,13 @@ exports.bubble = ({ city, stores }) => ({
               {
                 action: {
                   type: 'uri',
-                  uri: store.url,
+                  uri: toRedirectGaUrl({
+                    u: store.url,
+                    cd: '查看店家IG',
+                    ec: '查看店家IG',
+                    ea: store.city,
+                    el: store.name,
+                  }),
                 },
                 aspectMode: 'cover',
                 aspectRatio: '1:1',
