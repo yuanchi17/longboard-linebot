@@ -16,7 +16,10 @@ module.exports = ctx => {
       ],
     },
     quickReply: {
-      items: quickReply.shareForm('我知道其他地點'),
+      items: quickReply.shareForm({
+        label: '我知道其他地點',
+        cd: '分享更多資訊-地點',
+      }),
     },
   }
 }

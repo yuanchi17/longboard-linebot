@@ -94,6 +94,9 @@ exports.main = ({ city, grounds }) => ({
   altText: `想來${city}玩板嗎？這些場地給你參考參考～`,
   contents: exports.bubble({ city, grounds }),
   quickReply: {
-    items: quickReply.shareForm('我知道其他地方'),
+    items: quickReply.shareForm({
+      label: '我知道其他地方',
+      cd: '分享更多資訊-玩板場地',
+    }),
   },
 })

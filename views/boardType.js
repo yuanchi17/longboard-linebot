@@ -134,6 +134,9 @@ module.exports = boards => ({
     ],
   },
   quickReply: {
-    items: quickReply.shareForm('我要補充介紹'),
+    items: quickReply.shareForm({
+      label: '我要補充介紹',
+      cd: '分享更多資訊-種類介紹',
+    }),
   },
 })

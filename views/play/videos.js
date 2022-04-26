@@ -89,7 +89,10 @@ module.exports = ({ item, videos }) => {
       ],
     },
     quickReply: {
-      items: quickReply.shareForm('我知道更多教學影片'),
+      items: quickReply.shareForm({
+        label: '我知道更多教學影片',
+        cd: '分享更多資訊-教學影片',
+      }),
     },
   }
 }

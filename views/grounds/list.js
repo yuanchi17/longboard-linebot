@@ -75,7 +75,10 @@ module.exports = groundCitys => {
       },
     },
     quickReply: {
-      items: quickReply.shareForm('我要提供其他縣市'),
+      items: quickReply.shareForm({
+        label: '我要提供其他縣市',
+        cd: '分享更多資訊-縣市玩板場地',
+      }),
     },
   }
 }

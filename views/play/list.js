@@ -105,7 +105,10 @@ module.exports = ({ type, items, keyword }) => {
       quickReply: {
         items: [
           ...ctx.quickReply,
-          ...quickReply.shareForm('我要提供其他系列'),
+          ...quickReply.shareForm({
+            label: '我要提供其他系列',
+            cd: '分享更多資訊-招式系列',
+          }),
         ],
       },
     },
