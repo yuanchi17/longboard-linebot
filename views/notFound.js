@@ -2,7 +2,7 @@ const { color } = require('../libs/helpers')
 
 module.exports = msg => ({
   type: 'flex',
-  altText: `抱歉，我沒有「${msg}」的資料哦`,
+  altText: '嗨～你說的小編能看到哦，但若想查詢資訊請點選下方的主選單進行查詢。',
   contents: {
     type: 'bubble',
     body: {
@@ -10,7 +10,7 @@ module.exports = msg => ({
       layout: 'horizontal',
       contents: [{
         type: 'text',
-        text: `抱歉，我沒有「${msg}」的資料哦😓\n\n請點選下方的主選單進行查詢，若想提供更多資訊，請點擊下方「讓我來告訴你」，小編將不定時更新資料😄`,
+        text: '嗨～你說的小編能看到哦，但若想查詢資訊請點選下方的主選單進行查詢。\n\n若想提供資訊或使用上的疑問，請點擊下方「讓我來告訴你」，小編將不定時更新資料及修復😄',
         size: 'sm',
         wrap: true,
       }],
