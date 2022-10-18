@@ -6,7 +6,7 @@ const path = require('path')
 const { client, middleware } = require('./libs/lineat')
 
 const _ = require('lodash')
-const { errToPlainObj, getenv } = require('./libs/helpers')
+const { log, getenv } = require('./libs/helpers')
 const flexText = require('./views/flexText')
 const GaService = require('./services/GaService')
 
@@ -47,13 +47,15 @@ const handleEvent = async event => {
   }
 }
 
-app.post('/', middleware, (req, res) => {
-  Promise
-    .all(req.body.events.map(handleEvent))
-    .then((result) => { res.json(result) })
-    .catch(err => {
-      console.log(errToPlainObj(err))
-    })
+app.post('/', middleware, async (req, res) => {
+  try {
+    const events = _.get(req, 'body.events', [])
+    await Promise.all(_.map(events, event => handleEvent(event)))
+    res.status(200).send('OK')
+  } catch (err) {
+    log('ERROR', err)
+    res.status(err.status || 500).send(err.message)
+  }
 })
 app.use('/liff', require('./routes/liff'))
 

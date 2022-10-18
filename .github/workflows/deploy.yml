@@ -1,0 +1,49 @@
+name: Cloud Functions Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+
+    steps:
+    - uses: actions/checkout@v3
+    - id: 'auth'
+      uses: google-github-actions/auth@v0
+      with:
+        workload_identity_provider: '$WORKLOAD_IDENTITY_PROVIDER'
+        service_account: 'gcf-deploy@longboard-linebot.iam.gserviceaccount.com'
+    # https://github.com/google-github-actions/setup-gcloud
+    # https://github.com/google-github-actions/auth#setting-up-workload-identity-federation
+    - name: 設定 Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0
+    - name: 建立 GCF 環境變數檔案
+      shell: bash
+      run: |
+        [[ -z "$ENV_STAGE" ]] || echo "$ENV_STAGE" > .env.yaml
+        echo "GITHUB_SHA: ${GITHUB_SHA}" >> .env.yaml
+      env:
+        ENV_STAGE: ${{ secrets.ENV_STAGE }}
+    # https://cloud.google.com/functions/docs/deploy
+    # 請在這個網頁查看自動佈署的參數說明
+    - name: 部署到 Google Cloud Functions
+      run: >-
+        gcloud functions deploy "longboard-linebot-stage"
+        --allow-unauthenticated
+        --entry-point=helloGET
+        --env-vars-file=.env.yaml
+        --gen2
+        --max-instances=1
+        --memory=128Mi
+        --no-user-output-enabled
+        --region=us-central1
+        --runtime=nodejs16
+        --timeout=60s
+        --trigger-http

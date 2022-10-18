@@ -14,7 +14,6 @@ exports.httpBuildQuery = (obj) => Qs.stringify(obj, { arrayFormat: 'brackets' })
 exports.errToPlainObj = (() => {
   const ERROR_KEYS = [
     'address',
-    'args',
     'code',
     'data',
     'dest',
@@ -38,6 +37,19 @@ exports.errToPlainObj = (() => {
     'syscall',
   ]
   return err => _.pick(err, ERROR_KEYS)
+})()
+
+exports.log = (() => {
+  const LOG_SEVERITY = ['DEFAULT', 'DEBUG', 'INFO', 'NOTICE', 'WARNING', 'ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY']
+  return (...args) => {
+    let severity = 'DEFAULT'
+    if (args.length > 1 && _.includes(LOG_SEVERITY, _.toUpper(args[0]))) severity = _.toUpper(args.shift())
+    _.each(args, arg => {
+      if (_.isString(arg)) arg = { message: arg }
+      if (arg instanceof Error) arg = exports.errToPlainObj(arg)
+      console.log(JSON.stringify({ severity, ...arg }))
+    })
+  }
 })()
 
 exports.toGoogleMap = location => {
