@@ -37,7 +37,7 @@ jobs:
       run: >-
         gcloud functions deploy "longboard-linebot-stage"
         --allow-unauthenticated
-        --entry-point=helloGET
+        --entry-point=main
         --env-vars-file=.env.yaml
         --gen2
         --max-instances=1
