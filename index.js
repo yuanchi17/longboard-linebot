@@ -4,6 +4,7 @@ const _ = require('lodash')
 const { log } = require('./libs/helpers')
 const flexText = require('./views/flexText')
 const functions = require('@google-cloud/functions-framework')
+const GaService = require('./services/GaService')
 const Line = require('@line/bot-sdk').Client
 
 const handleEvent = async ctx => {
@@ -16,6 +17,7 @@ const handleEvent = async ctx => {
   } catch (err) {
     log(`無法從 LINE 取得使用者資料, lineId = ${lineId}`)
   }
+  GaService.gaTargetByLineId(lineId, event)
   switch (event.type) {
     case 'message':
       if (event.message.type === 'text') return await require('./routes/messageText')({ event, line })
