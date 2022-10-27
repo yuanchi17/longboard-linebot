@@ -1,8 +1,7 @@
 const _ = require('lodash')
-const { client } = require('../../libs/lineat')
 const GetData = require('../../getData')
 
-module.exports = async ({ event, args }) => {
+module.exports = async ({ event, args, line }) => {
   let item = args[0]
   item = { ...item, category: _.trim(`${item.category_en} ${item.category_cn}`) }
   try {
@@ -11,10 +10,10 @@ module.exports = async ({ event, args }) => {
     if (!videos.length) throw new Error('查無結果')
     event.gaScreenView('教學影片清單')
     event.gaEventLabel('教學影片清單', '招式', item.category)
-    return client.replyMessage(event.replyToken, require('../../views/play/videos')({ item, videos }))
+    return line.replyMessage(event.replyToken, require('../../views/play/videos')({ item, videos }))
   } catch (err) {
     event.gaScreenView('教學影片清單')
     event.gaEventLabel('教學影片清單', err.message, item.category)
-    return client.replyMessage(event.replyToken, require('../../views/play/videosEmpty')(item))
+    return line.replyMessage(event.replyToken, require('../../views/play/videosEmpty')(item))
   }
 }

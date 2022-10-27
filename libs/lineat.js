@@ -7,10 +7,7 @@ const config = {
   channelAccessToken: getenv('LINE_CHANNEL_ACCESSTOKEN'),
 }
 
-const client = new line.Client(config)
-
 module.exports = {
   line,
-  client,
   middleware: line.middleware(config),
 }

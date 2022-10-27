@@ -1,7 +1,5 @@
-const { client } = require('../../libs/lineat')
-
-module.exports = async ({ event }) => {
+module.exports = async ({ event, line }) => {
   const msg = require('../../views/play/option')()
   event.gaScreenView('主選單-我想玩板')
-  return client.replyMessage(event.replyToken, msg)
+  return line.replyMessage(event.replyToken, msg)
 }
