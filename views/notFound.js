@@ -1,8 +1,8 @@
 const { color } = require('../libs/helpers')
 
-module.exports = msg => ({
+module.exports = () => ({
   type: 'flex',
-  altText: '嗨～你說的小編能看到哦，但若想查詢資訊請點選下方的主選單進行查詢。',
+  altText: '點選下方的主選單可以進行查詢哦～',
   contents: {
     type: 'bubble',
     body: {
@@ -10,7 +10,7 @@ module.exports = msg => ({
       layout: 'horizontal',
       contents: [{
         type: 'text',
-        text: '嗨～你說的小編能看到哦，但若想查詢資訊請點選下方的主選單進行查詢。\n\n若想提供資訊或使用上的疑問，請點擊下方「讓我來告訴你」，小編將不定時更新資料及修復😄',
+        text: '點選下方的主選單可以進行查詢哦～\n\n有任何問題請點擊下方「讓我來告訴你」，小編將不定時更新資料及修復😄\n\n也歡迎聯絡小編：\nhttps://www.instagram.com/yuanchi_longboard/',
         size: 'sm',
         wrap: true,
       }],
