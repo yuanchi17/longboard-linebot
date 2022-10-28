@@ -1,13 +1,13 @@
-name: Cloud Functions Deploy - Production
+name: Cloud Functions Deploy - Staging
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ develop ]
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
 
     permissions:
@@ -27,15 +27,15 @@ jobs:
     - name: 建立 GCF 環境變數檔案
       shell: bash
       run: |
-        [[ -z "$ENV_PROD" ]] || echo "$ENV_PROD" > .env.yaml
+        [[ -z "$ENV_STAGE" ]] || echo "$ENV_STAGE" > .env.yaml
         echo "GITHUB_SHA: ${GITHUB_SHA}" >> .env.yaml
       env:
-        ENV_PROD: ${{ secrets.ENV_PROD }}
+        ENV_STAGE: ${{ secrets.ENV_STAGE }}
     # https://cloud.google.com/functions/docs/deploy
     # 請在這個網頁查看自動佈署的參數說明
-    - name: 部署到 Google Cloud Functions - Production
+    - name: 部署到 Google Cloud Functions - Staging
       run: >-
-        gcloud functions deploy "longboard-linebot-production"
+        gcloud functions deploy "longboard-linebot-stage"
         --allow-unauthenticated
         --entry-point=main
         --env-vars-file=.env.yaml
