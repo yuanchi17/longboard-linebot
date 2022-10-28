@@ -62,6 +62,7 @@ exports.toGoogleMap = location => {
   return `https://www.google.com/maps/search/?${Qs.stringify(query)}`
 }
 
+// NOTE: 目前已取消跳轉 LIFF 蒐集 GA
 exports.toRedirectGaUrl = ({ u, cd, ec, ea, el }) => {
   const LIFF = exports.getenv('LIFF_FULL', '1656599717-l3G7AM3d')
   return `https://liff.line.me/${LIFF}/redirect-ga?${Qs.stringify({ u, cd, ec, ea, el })}`
