@@ -4,6 +4,7 @@ const _ = require('lodash')
 const { log } = require('./libs/helpers')
 const flexText = require('./views/flexText')
 const functions = require('@google-cloud/functions-framework')
+const Ga3Service = require('./services/Ga3Service')
 const GaService = require('./services/GaService')
 const Line = require('@line/bot-sdk').Client
 
@@ -17,7 +18,8 @@ const handleEvent = async ctx => {
   } catch (err) {
     log(`無法從 LINE 取得使用者資料, lineId = ${lineId}`)
   }
-  GaService.gaTargetByLineId(lineId, event)
+  Ga3Service.gaTargetByLineId(lineId, event) // GA3
+  GaService.gaTargetByLineId(lineId, event) // GA4
   switch (event.type) {
     case 'message':
       if (event.message.type === 'text') return await require('./routes/messageText')({ event, line })
@@ -25,10 +27,10 @@ const handleEvent = async ctx => {
     case 'postback':
       return await require('./routes/postback')({ event, line })
     case 'follow':
-      event.gaScreenView('加入好友')
+      event.ga3ScreenView('加入好友')
       break
     case 'unfollow':
-      event.gaScreenView('封鎖好友')
+      event.ga3ScreenView('封鎖好友')
       break
     default:
       break

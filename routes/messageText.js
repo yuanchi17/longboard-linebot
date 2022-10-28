@@ -14,7 +14,7 @@ module.exports = async ({ event, line }) => {
   if (keyword[text]) return await keyword[text]({ event, line })
 
   if (text === '/lineid') {
-    event.gaScreenView('查詢 LINE ID')
+    event.ga3ScreenView('查詢 LINE ID')
     return await line.replyMessage(event.replyToken, require('../views/flexText')())
   }
 
@@ -32,7 +32,11 @@ module.exports = async ({ event, line }) => {
   }
 
   // 沒有此查詢資料
-  event.gaScreenView('未知訊息')
-  event.gaEventLabel('未知訊息', '未知訊息', text)
+  event.ga3ScreenView('未知訊息')
+  event.ga3EventLabel('未知訊息', '未知訊息', text)
+  event.sendGa4([{
+    name: 'undefined_msg',
+    params: { line_msg: text },
+  }])
   await line.replyMessage(event.replyToken, require('../views/notFound')(text))
 }
