@@ -1,5 +1,4 @@
 const _ = require('lodash')
-const { toRedirectGaUrl } = require('../../libs/helpers')
 const quickReply = require('../quickReply')
 
 const ICON = {
@@ -34,13 +33,7 @@ module.exports = ({ item, videos }) => {
                 type: 'box',
                 action: {
                   type: 'uri',
-                  uri: toRedirectGaUrl({
-                    u: video.url,
-                    cd: '查看教學影片',
-                    ec: '查看教學影片',
-                    ea: `${video.owner}-${video.type}`,
-                    el: video.id,
-                  }),
+                  uri: video.url,
                 },
                 contents: [
                   {
