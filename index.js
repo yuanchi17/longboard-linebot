@@ -1,7 +1,8 @@
 require('dotenv').config()
 
 const _ = require('lodash')
-const { log } = require('./libs/helpers')
+const { log, getenv } = require('./libs/helpers')
+const axios = require('axios')
 const flexText = require('./views/flexText')
 const functions = require('@google-cloud/functions-framework')
 const Ga3Service = require('./services/Ga3Service')
@@ -28,9 +29,19 @@ const handleEvent = async ctx => {
       return await require('./routes/postback')({ event, line })
     case 'follow':
       event.ga3ScreenView('加入好友')
+      axios.post(`https://www.google-analytics.com/mp/collect?measurement_id=${getenv('MEASUREMENT_ID')}&api_secret=${getenv('MEASUREMENT_PROTOCOL_KEY')}`, {
+        client_id: 'LINE Longboard Staging',
+        user_id: lineId,
+        events: [{
+          name: 'follow_friend',
+          params: { from: 'axios' },
+        }],
+      })
+      event.sendGa4({ name: 'follow_friend', params: { from: 'sendGA4' } })
       break
     case 'unfollow':
       event.ga3ScreenView('封鎖好友')
+      event.sendGa4({ name: 'unfollow_friend' })
       break
     default:
       break
