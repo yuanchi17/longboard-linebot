@@ -112,14 +112,20 @@ exports.bubble = ({ city, stores }) => ({
   },
 })
 
-exports.main = ({ city, stores }) => ({
-  type: 'flex',
-  altText: `我知道${city}有這些滑板店！提供給你參考參考～`,
-  contents: exports.bubble({ city, stores }),
-  quickReply: {
-    items: quickReply.shareForm({
-      label: '我知道其它店家',
-      cd: '分享更多資訊-店家',
-    }),
+exports.main = ({ city, stores }) => ([
+  {
+    type: 'text',
+    text: '點擊想去的店家立刻開起 Google 地圖帶你去！想看看店家 IG 請點擊右方圖示～',
   },
-})
+  {
+    type: 'flex',
+    altText: `我知道${city}有這些滑板店！提供給你參考參考～`,
+    contents: exports.bubble({ city, stores }),
+    quickReply: {
+      items: quickReply.shareForm({
+        label: '我知道其它店家',
+        cd: '分享更多資訊-店家',
+      }),
+    },
+  },
+])

@@ -89,14 +89,20 @@ exports.bubble = ({ city, grounds }) => ({
   },
 })
 
-exports.main = ({ city, grounds }) => ({
-  type: 'flex',
-  altText: `想來${city}玩板嗎？這些場地給你參考參考～`,
-  contents: exports.bubble({ city, grounds }),
-  quickReply: {
-    items: quickReply.shareForm({
-      label: '我知道其他地方',
-      cd: '分享更多資訊-玩板場地',
-    }),
+exports.main = ({ city, grounds }) => ([
+  {
+    type: 'text',
+    text: '點擊下方想去的玩板地點，立刻打開 Google 地圖帶你去！',
   },
-})
+  {
+    type: 'flex',
+    altText: `想來${city}玩板嗎？這些場地給你參考參考～`,
+    contents: exports.bubble({ city, grounds }),
+    quickReply: {
+      items: quickReply.shareForm({
+        label: '我知道其他地方',
+        cd: '分享更多資訊-玩板場地',
+      }),
+    },
+  },
+])
