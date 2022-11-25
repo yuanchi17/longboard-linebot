@@ -29,19 +29,11 @@ const handleEvent = async ctx => {
       return await require('./routes/postback')({ event, line })
     case 'follow':
       event.ga3ScreenView('加入好友')
-      axios.post(`https://www.google-analytics.com/mp/collect?measurement_id=${getenv('MEASUREMENT_ID')}&api_secret=${getenv('MEASUREMENT_PROTOCOL_KEY')}`, {
-        client_id: 'LINE Longboard Staging',
-        user_id: lineId,
-        events: [{
-          name: 'follow_friend',
-          params: { from: 'axios' },
-        }],
-      })
-      event.sendGa4({ name: 'follow_friend', params: { from: 'sendGA4' } })
+      event.sendGa4({ name: '加入好友' })
       break
     case 'unfollow':
       event.ga3ScreenView('封鎖好友')
-      event.sendGa4({ name: 'unfollow_friend' })
+      event.sendGa4({ name: '封鎖好友' })
       break
     default:
       break

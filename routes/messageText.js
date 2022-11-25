@@ -15,8 +15,8 @@ module.exports = async ({ event, line }) => {
 
   if (text === '/lineid') {
     event.ga3ScreenView('查詢 LINE ID')
-    event.sendGa4({ name: 'search_line_id' })
-    return await line.replyMessage(event.replyToken, require('../views/flexText')())
+    event.sendGa4({ name: '查詢 LINE ID' })
+    return await line.replyMessage(event.replyToken, require('../views/flexText')(_.get(event, 'source.userId')))
   }
 
   // 關鍵字查招式
@@ -36,8 +36,8 @@ module.exports = async ({ event, line }) => {
   event.ga3ScreenView('未知訊息')
   event.ga3EventLabel('未知訊息', '未知訊息', text)
   event.sendGa4({
-    name: 'undefined_msg',
-    params: { line_msg: text },
+    name: '未知訊息',
+    params: { 未知訊息: text },
   })
   await line.replyMessage(event.replyToken, require('../views/notFound')(text))
 }
