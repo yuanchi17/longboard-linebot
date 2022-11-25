@@ -1,8 +1,7 @@
 require('dotenv').config()
 
 const _ = require('lodash')
-const { log, getenv } = require('./libs/helpers')
-const axios = require('axios')
+const { log } = require('./libs/helpers')
 const flexText = require('./views/flexText')
 const functions = require('@google-cloud/functions-framework')
 const Ga3Service = require('./services/Ga3Service')
