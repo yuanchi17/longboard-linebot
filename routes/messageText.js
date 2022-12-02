@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const { SearchPlayItemsByKeyword, SearchGroundsAndStoresByKeyword } = require('../libs/helpers')
 
 /**
@@ -14,8 +15,9 @@ module.exports = async ({ event, line }) => {
   if (keyword[text]) return await keyword[text]({ event, line })
 
   if (text === '/lineid') {
-    event.gaScreenView('查詢 LINE ID')
-    return await line.replyMessage(event.replyToken, require('../views/flexText')())
+    event.ga3ScreenView('查詢 LINE ID')
+    event.sendGa4({ name: '查詢 LINE ID' })
+    return await line.replyMessage(event.replyToken, require('../views/flexText')(_.get(event, 'source.userId')))
   }
 
   // 關鍵字查招式
@@ -32,7 +34,11 @@ module.exports = async ({ event, line }) => {
   }
 
   // 沒有此查詢資料
-  event.gaScreenView('未知訊息')
-  event.gaEventLabel('未知訊息', '未知訊息', text)
-  await line.replyMessage(event.replyToken, require('../views/notFound')(text))
+  event.ga3ScreenView('未知訊息')
+  event.ga3EventLabel('未知訊息', '未知訊息', text)
+  event.sendGa4({
+    name: '未知訊息',
+    params: { 未知訊息: text },
+  })
+  await line.replyMessage(event.replyToken, require('../views/notFound')())
 }

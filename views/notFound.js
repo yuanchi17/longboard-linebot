@@ -2,7 +2,7 @@ const { color } = require('../libs/helpers')
 
 module.exports = () => ({
   type: 'flex',
-  altText: '點選下方的主選單可以進行查詢哦～',
+  altText: '嘿！你有話想對小編說嗎？有任何問題歡迎直接提出，小編看到會立即回覆的！',
   contents: {
     type: 'bubble',
     body: {
@@ -10,7 +10,7 @@ module.exports = () => ({
       layout: 'horizontal',
       contents: [{
         type: 'text',
-        text: '點選下方的主選單可以進行查詢哦～\n\n有任何問題也歡迎提出，小編將不定時更新資料及修復😄',
+        text: '嘿！你有話想對小編說嗎？有任何問題歡迎直接提出，小編看到會立即回覆的！\n\n貼心提醒：點選下方的主選單可以進行查詢哦～',
         size: 'sm',
         wrap: true,
       }],
