@@ -2,7 +2,6 @@ require('dotenv').config()
 
 const _ = require('lodash')
 const { log } = require('./libs/helpers')
-const flexText = require('./views/flexText')
 const functions = require('@google-cloud/functions-framework')
 const Ga3Service = require('./services/Ga3Service')
 const GaService = require('./services/GaService')
@@ -12,9 +11,8 @@ const handleEvent = async ctx => {
   const { event, line } = ctx
   const lineId = _.get(event, 'source.userId')
   if (!lineId) return
-  let profile
   try { // 封鎖好友會抓不到
-    profile = await line.getProfile(event.source.userId)
+    await line.getProfile(event.source.userId)
   } catch (err) {
     log(`無法從 LINE 取得使用者資料, lineId = ${lineId}`)
   }
@@ -23,7 +21,7 @@ const handleEvent = async ctx => {
   switch (event.type) {
     case 'message':
       if (event.message.type === 'text') return await require('./routes/messageText')({ event, line })
-      return line.replyMessage(event.replyToken, flexText(`嗨～${profile.displayName}，點選下方的主選單可以進行查詢哦～\n\n有任何問題歡迎聯絡小編：\nhttps://www.instagram.com/yuanchi_longboard/`))
+      return line.replyMessage(event.replyToken, require('./views/notFound')())
     case 'postback':
       return await require('./routes/postback')({ event, line })
     case 'follow':

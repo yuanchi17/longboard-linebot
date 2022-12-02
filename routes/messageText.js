@@ -40,5 +40,5 @@ module.exports = async ({ event, line }) => {
     name: '未知訊息',
     params: { 未知訊息: text },
   })
-  await line.replyMessage(event.replyToken, require('../views/notFound')(text))
+  await line.replyMessage(event.replyToken, require('../views/notFound')())
 }
