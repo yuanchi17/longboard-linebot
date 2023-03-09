@@ -4,3 +4,12 @@
 * [正式站](https://line.me/R/ti/p/@117idlhz)
 
 * [測試站](https://line.me/R/ti/p/@512sfhjo)
+
+## 本機開發
+
+```bash
+yarn dev
+
+# 更新 LINE Messaging API 的 Webhook URL
+yarn ngrok
+```
