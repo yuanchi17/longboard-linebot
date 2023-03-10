@@ -47,16 +47,44 @@ const getBox = store => ({
 exports.bubble = ({ city, stores }) => ({
   type: 'bubble',
   header: {
-    type: 'box',
-    layout: 'vertical',
     backgroundColor: color.blue,
-    contents: [{
-      type: 'text',
-      text: `${city}滑板店`,
-      weight: 'bold',
-      size: 'xl',
-      color: color.white,
-    }],
+    layout: 'vertical',
+    paddingBottom: '8px',
+    paddingTop: '8px',
+    type: 'box',
+    contents: [
+      {
+        height: '60px',
+        layout: 'vertical',
+        paddingAll: '8px',
+        type: 'box',
+        width: '60px',
+        contents: [
+          {
+            type: 'image',
+            url: 'https://i.imgur.com/geuwlVu.png',
+          },
+        ],
+      },
+      {
+        height: '76px',
+        layout: 'vertical',
+        offsetStart: '90px',
+        position: 'absolute',
+        type: 'box',
+        contents: [
+          {
+            color: color.white,
+            flex: 1,
+            gravity: 'center',
+            size: 'xl',
+            text: `${city}板店`,
+            type: 'text',
+            weight: 'bold',
+          },
+        ],
+      },
+    ],
   },
   body: {
     layout: 'vertical',
@@ -107,7 +135,7 @@ exports.main = ({ city, stores }) => ([
   },
   {
     type: 'flex',
-    altText: `我知道${city}有這些滑板店！提供給你參考參考～`,
+    altText: `我知道${city}有這些板店！提供給你參考參考～`,
     contents: exports.bubble({ city, stores }),
     quickReply: {
       items: quickReply.shareForm({

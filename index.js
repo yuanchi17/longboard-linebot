@@ -26,11 +26,11 @@ const handleEvent = async ctx => {
       return await require('./routes/postback')({ event, line })
     case 'follow':
       event.ga3ScreenView('加入好友')
-      event.sendGa4({ name: '加入好友' })
+      event.sendGa4({ name: 'line_oa', params: { type: '加入好友' } })
       break
     case 'unfollow':
       event.ga3ScreenView('封鎖好友')
-      event.sendGa4({ name: '封鎖好友' })
+      event.sendGa4({ name: 'line_oa', params: { type: '封鎖好友' } })
       break
     default:
       break

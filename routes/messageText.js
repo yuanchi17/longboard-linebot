@@ -16,7 +16,7 @@ module.exports = async ({ event, line }) => {
 
   if (text === '/lineid') {
     event.ga3ScreenView('查詢 LINE ID')
-    event.sendGa4({ name: '查詢 LINE ID' })
+    event.sendGa4({ name: 'line_oa', params: { type: '查詢 LINE ID' } })
     return await line.replyMessage(event.replyToken, require('../views/flexText')(_.get(event, 'source.userId')))
   }
 
@@ -30,6 +30,7 @@ module.exports = async ({ event, line }) => {
     return require('./postback/groundsAndStoresByKeyword')({
       ctx: cityItems,
       event,
+      line,
     })
   }
 
@@ -37,8 +38,11 @@ module.exports = async ({ event, line }) => {
   event.ga3ScreenView('未知訊息')
   event.ga3EventLabel('未知訊息', '未知訊息', text)
   event.sendGa4({
-    name: '未知訊息',
-    params: { 未知訊息: text },
+    name: 'line_oa',
+    params: {
+      type: '未知訊息',
+      undefind_msg: text,
+    },
   })
   await line.replyMessage(event.replyToken, require('../views/notFound')())
 }
